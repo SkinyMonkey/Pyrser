@@ -1,5 +1,3 @@
-/* vim: set filetype=ocaml : */
-
 statement ::=
        @_
        [

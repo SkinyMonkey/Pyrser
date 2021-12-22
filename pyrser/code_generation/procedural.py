@@ -31,17 +31,19 @@ class Procedural(BrowseGrammar):
         self.oHelper.popCount()
 
     def addOpenParenthesis(self, oTarget):
-        if oTarget['terminal']['type'] in ('multiplier', 'alt'):
+        if oTarget["terminal"]["type"] in ("multiplier", "alt"):
             self.sRes += "(\\\n"
-            self.lang_terminal(oTarget['terminal'])
+            self.lang_terminal(oTarget["terminal"])
         else:
             self.sRes += "("
-            self.lang_terminal(oTarget['terminal'], False)
+            self.lang_terminal(oTarget["terminal"], False)
 
     def unary(self, oTarget, bNewline=True):
         self.wrap_context(self.addOpenParenthesis, oTarget)
-        if oTarget['terminal']['type'] in ('multiplier', 'alt', 'terminal_range')\
-                and bNewline:
+        if (
+            oTarget["terminal"]["type"] in ("multiplier", "alt", "terminal_range")
+            and bNewline
+        ):
             self.sRes += "\n"
             self.sRes += self.oHelper.indent()
 
@@ -52,73 +54,72 @@ class Procedural(BrowseGrammar):
 
     def lang_alternative_terminal(self, oAlt):
         self.sRes += self.capitalizeIfRecurse(self.oHelper.alt())
-        self.sRes += '(\\\n'
-        self.oHelper.pushAlt(True, len(oAlt['alternatives']))
+        self.sRes += "(\\\n"
+        self.oHelper.pushAlt(True, len(oAlt["alternatives"]))
         self.oHelper.incDepth()
         self.browse_clauses(oAlt)
-        self.sRes += ')'
+        self.sRes += ")"
         self.oHelper.decDepth()
         self.oHelper.popAlt()
 
     def lang_terminal_range(self, terminal):
-        self.sRes +=\
-            self.capitalizeIfRecurse(self.oHelper.multiplier('{}'))
+        self.sRes += self.capitalizeIfRecurse(self.oHelper.multiplier("{}"))
         self.unary(terminal)
-        self.sRes += ", %s" % terminal['from']
-        if 'to' in terminal:
-            self.sRes += ", %s" % terminal['to']
+        self.sRes += ", %s" % terminal["from"]
+        if "to" in terminal:
+            self.sRes += ", %s" % terminal["to"]
         self.sRes += ")"
 
     def lang_not(self, negation):
-        self.sRes +=\
-            self.capitalizeIfRecurse(self.oHelper.not_(negation['not']))
+        self.sRes += self.capitalizeIfRecurse(self.oHelper.not_(negation["not"]))
         self.unary(negation, False)
         self.sRes += ")"
 
     def lang_multiplier(self, multiplier):
-        self.sRes +=\
-            self.capitalizeIfRecurse(
-                self.oHelper.multiplier(multiplier['multiplier']))
-        if multiplier['multiplier'] == '[]':
-            self.sRes += '(\\\n'
-            self.wrap_context(self.browse_clauses,
-                              multiplier['terminal']['clauses'])
+        self.sRes += self.capitalizeIfRecurse(
+            self.oHelper.multiplier(multiplier["multiplier"])
+        )
+        if multiplier["multiplier"] == "[]":
+            self.sRes += "(\\\n"
+            self.wrap_context(self.browse_clauses, multiplier["terminal"]["clauses"])
         else:
             self.unary(multiplier, False)
         self.sRes += ")"
 
     def lang_capture(self, capture):
-        self.sRes += self.capitalizeIfRecurse('capture')
+        self.sRes += self.capitalizeIfRecurse("capture")
         self.unary(capture)
-        self.sRes += ', "%s", oNode)' % capture['name']
+        self.sRes += ', "%s", oNode)' % capture["name"]
 
     def lang_until(self, until):
-        self.sRes += self.capitalizeIfRecurse('until')
+        self.sRes += self.capitalizeIfRecurse("until")
         self.unary(until, False)
-        self.sRes += ')'
+        self.sRes += ")"
 
     def lang_lookAhead(self, look_ahead):
-        self.sRes += capitalizeIfRecurse('lookAhead')
+        self.sRes += capitalizeIfRecurse("lookAhead")
         unary(look_ahead, False)
-        self.sRes += ')'
+        self.sRes += ")"
 
     def lang_syntax(self, indent=True):
         if indent == True:
             self.sRes += self.oHelper.indent()
         if not self.oHelper.inRecurse():
-            self.sRes += self.oHelper.keyword('and')
-        if self.oHelper.inRecurse()\
-            and (self.oHelper.count() > 0
-                 or self.oHelper.altCount() > 0):
+            self.sRes += self.oHelper.keyword("and")
+        if self.oHelper.inRecurse() and (
+            self.oHelper.count() > 0 or self.oHelper.altCount() > 0
+        ):
             self.sRes += ","
         else:
             self.sRes += " "
 
     def lang_terminal(self, terminal, indent=True):
         self.lang_syntax(indent)
-        getattr(self, 'lang_%s' % terminal['type'])(terminal)
-        if self.oHelper.count() < self.oHelper.length() - 1\
-                or self.oHelper.altCount() < self.oHelper.altLength() - 1:
+        getattr(self, "lang_%s" % terminal["type"])(terminal)
+        if (
+            self.oHelper.count() < self.oHelper.length() - 1
+            or self.oHelper.altCount() < self.oHelper.altLength() - 1
+        ):
             self.sRes += "\\\n"
             self.oHelper.incCount()
 

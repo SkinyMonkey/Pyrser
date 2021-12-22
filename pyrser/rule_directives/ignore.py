@@ -27,6 +27,7 @@ class ignore(object):
     """
     A decorator that specify the wsList
     """
+
     def __init__(self, sWsList):
         if sWsList.upper() in dWsList:
             self.__sWsList = dWsList[sWsList.upper()]
@@ -40,4 +41,5 @@ class ignore(object):
             bRes = oRule(*lArgs)
             Parsing.oBaseParser.setWsList(sOldWsList)
             return bRes
+
         return wrapper

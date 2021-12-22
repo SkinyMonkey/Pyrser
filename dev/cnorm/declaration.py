@@ -6,19 +6,27 @@ from copy import copy
 
 
 class CDeclaration(GenericHook, Grammar):
+    __grammar__ = open("./dev/cnorm/grammar/declaration.pw").read()
+
     def __init__(self):
-        GenericHook.__init__(self)
-        Grammar.__init__(self, CDeclaration,
-                         open("./grammar/declaration.pw").read(),
-                         globals())
-        self.__dDefaultCType =\
-            {
-                "type": "__primary__",
-                "sign": "signed",
-                "type_specifier": "int",
-                "type_qualifier": None,
-                "storage_class_specifier": "auto"
-            }
+        super(Grammar, self).__init__()
+        super(GenericHook, self).__init__()
+        self.__dDefaultCType = {
+            "type": "__primary__",
+            "sign": "signed",
+            "type_specifier": "int",
+            "type_qualifier": None,
+            "storage_class_specifier": "auto",
+        }
+
+    def empty_list_atHook(self, oNode, sKey):
+        """
+        Called when no parameter is found
+        Example:
+            char (*funcptr)();
+        """
+        oNode[sKey] = []
+        return oNode
 
     def typeHook(self, oNode, sSubExpr, sType="__declaration__"):
         """
@@ -43,8 +51,7 @@ class CDeclaration(GenericHook, Grammar):
         return True
 
     def cleanHook(self, oNode, sKey, sSubKey=None):
-        if sSubKey != None\
-                and sSubKey in oNode:
+        if sSubKey != None and sSubKey in oNode:
             oNode = oNode[sSubKey]
         if sKey in oNode:
             del oNode[sKey]
@@ -59,7 +66,7 @@ class CDeclaration(GenericHook, Grammar):
     def push_parentHook(self, oNode, sField):
         # FIXME : solve the parent referencing problem
         return True
-        oParent = oNode['parent']
+        oParent = oNode["parent"]
         oParent[sField].append(copy(oNode))
         next_is(oNode, oParent[sField][-1])
         return True
@@ -81,8 +88,7 @@ class CDeclaration(GenericHook, Grammar):
         return True
 
     def add_qualifierHook(self, oNode):
-        oNode["ctype"]["pointer"][-1]["type_qualifier"] = oNode[
-            "type_qualifier"]
+        oNode["ctype"]["pointer"][-1]["type_qualifier"] = oNode["type_qualifier"]
         del oNode["type_qualifier"]
         return True
 
@@ -93,15 +99,15 @@ class CDeclaration(GenericHook, Grammar):
         return True
 
     def func_ptr_or_prototypeHook(self, oNode):
-        if "pointer" in oNode["ctype"]\
-                and "return" in oNode["ctype"]:
+        if "pointer" in oNode["ctype"] and "return" in oNode["ctype"]:
             self.ctypeHook(oNode, "__func_ptr__")
             self.typeHook(oNode, "__declaration__")
         # elif oNode["ctype"].has_key('params')\
-        elif 'array' not in oNode\
-            and 'body' not in oNode\
-            and oNode["ctype"]["type"] not in\
-                ["__union__", "__enum__", "__struct__"]:
+        elif (
+            "array" not in oNode
+            and "body" not in oNode
+            and oNode["ctype"]["type"] not in ["__union__", "__enum__", "__struct__"]
+        ):
             self.typeHook(oNode, "__prototype__")
             if "return" in oNode["ctype"]:
                 oNode["ctype"].update(oNode["ctype"]["return"])
@@ -113,18 +119,18 @@ class CDeclaration(GenericHook, Grammar):
     def isHook(self, oNode, sType, sSubKey=None):
         if sSubKey != None:
             oNode = oNode[sSubKey]
-        print oNode['type']
-        return oNode['type'] == sType
+        print(oNode["type"])
+        return oNode["type"] == sType
 
 
-if __name__ != '__main__':
+if __name__ != "__main__":
     CDeclaration()
 else:
     from tests.test import test
     from tests.declaration import lTest
 
-    bRes = test(lTest, CDeclaration(), 'declaration.tpl', 'translation_unit')
+    bRes = test(lTest, CDeclaration(), "declaration.tpl", "translation_unit")
     if bRes == False:
-        print "All test passed."
+        print("All test passed.")
     else:
-        print "Some exceptions were raised in the hooks."
+        print("Some exceptions were raised in the hooks.")

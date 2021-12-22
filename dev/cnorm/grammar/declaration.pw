@@ -1,5 +1,3 @@
-/* vim: set filetype=ocaml : */
-
 translation_unit ::=
     [ @push_at("external_declaration") external_declaration ]+
 ;
@@ -24,7 +22,6 @@ function_definition  ::=
           [
               @next("ctype") [declaration_specifiers]? #cdecl
               @_ declarator
-              // [ @_ declaration]* // in official grammar but ... wtf?
               @next("body", True) CStatement::compound
               #type("__function__")
           ]
@@ -69,7 +66,6 @@ type_specifier ::=
         ] :type_specifier
         | @_ struct_or_union_specifier
         | @_ enum_specifier
-        /*| typedef_name /*FIXME : ambiguous?*/ */
 ;
 
 type_qualifier ::= ["const" | "volatile"] :type_qualifier
@@ -88,7 +84,7 @@ struct_or_union ::= ["struct" #type("__struct__") | "union" #type("__union__")]
 ;
 
 struct_declaration ::= @next("ctype") specifier_qualifier_list #cdecl
-                       #ctype("__variable__")
+                       #ctype("__struct_field__")
                        @_ struct_declarator_list ';'
 ;
 
@@ -139,7 +135,11 @@ direct_declarator  ::=
 direct_absolute_declarator  ::=
             [ '[' @push_at("array") [CExpression::constant ]? ']' ]+
             |
-            '(' [ @next("ctype") parameter_list ]? ')'
+            '(' @next("ctype") [ parameter_list | no_parameters ] ')'
+;
+
+no_parameters ::=
+  #empty_list_at("parameters")
 ;
 
 pointer ::= '*' #cdecl #insert_ptr

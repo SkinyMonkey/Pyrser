@@ -24,10 +24,10 @@ class BrowseGrammar(object):
         self.oHelper = CodeGenerationHelper(dLangConf)
 
     def browse_multiplier(self, oMultiplier):
-        if oMultiplier['multiplier'] == 'expression':
-            browse_clauses(oMultiplier['terminal']['clauses'])
+        if oMultiplier["multiplier"] == "expression":
+            browse_clauses(oMultiplier["terminal"]["clauses"])
         else:
-            browse_terminal(oMultiplier['terminal'])
+            browse_terminal(oMultiplier["terminal"])
 
     def browse_alternative(self, lAlternative):
         for iAlternative in lAlternative:
@@ -35,24 +35,24 @@ class BrowseGrammar(object):
 
     def browse_clauses(self, lClauses):
         nCount = 0
-        for iAlternative in lClauses['alternatives']:
+        for iAlternative in lClauses["alternatives"]:
             self.lang_alternative(nCount, iAlternative)
             nCount += 1
 
     def browse_rule(self, oRule, oCallback):
-        oCallback(oRule['clauses'])
+        oCallback(oRule["clauses"])
 
     def browse_rule_directives(self, lRule_directives, oCallback):
         for rule_directive in lRule_directives:
             oCallback(rule_directive)
 
     def browse_hooks(self, oGrammar, oCallback):
-        for iHook in oGrammar['hooks']:
-            oCallback(oGrammar['name'], iHook)
+        for iHook in oGrammar["hooks"]:
+            oCallback(oGrammar["name"], iHook)
 
     def browse_wrappers(self, oGrammar, oCallback):
-        for iWrapper in oGrammar['wrappers']:
-            oCallback(oGrammar['name'], iWrapper)
+        for iWrapper in oGrammar["wrappers"]:
+            oCallback(oGrammar["name"], iWrapper)
 
     def browse_rules(self, sGrammarName, lRules, oCallback):
         for iRule in lRules:

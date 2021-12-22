@@ -1,14 +1,10 @@
 from pyrser.grammar import Grammar
 from pyrser.hooks import GenericHook
-from pyrser.node import slide, next
+from pyrser.node import slide, next, next_is
 
 
 class CExpression(GenericHook, Grammar):
-    def __init__(self):
-        GenericHook.__init__(self)
-        Grammar.__init__(self, CExpression,
-                         open("./grammar/expression.pw").read(),
-                         globals())
+    __grammar__ = open("./dev/cnorm/grammar/expression.pw").read()
 
     def __type(self, oNode, sSubExpr, sType="__expression__"):
         """
@@ -46,12 +42,11 @@ class CExpression(GenericHook, Grammar):
     def to_post_opHook(self, oNode, sType):
         self.to_post_exprHook(oNode, sType)
         oNode["postfix"][-1]["expr"]["op"] = oNode["op"]
-        del oNode['op']
+        del oNode["op"]
         return True
 
     def sizeofHook(self, oNode):
-        if "primary_id" in oNode\
-                and oNode["primary_id"] == "sizeof":
+        if "primary_id" in oNode and oNode["primary_id"] == "sizeof":
             oExpr = oNode["postfix"][0]["expr"]
             oNode.clear()
             self.__type(oNode, "sizeof")
@@ -60,16 +55,17 @@ class CExpression(GenericHook, Grammar):
 
     def captured_somethingHook(self, oNode):
         # FIXME : workaround degueu car dans certains cas
-        #	    la grammaire d'expression capture .. du vide
-        bRes = len(oNode['captured']) > 0
-        del oNode['captured']
+        # 	    la grammaire d'expression capture .. du vide
+        bRes = len(oNode["captured"]) > 0
+        del oNode["captured"]
         return bRes
 
-if __name__ != '__main__':
+
+if __name__ != "__main__":
     CExpression()
 else:
     from tests.test import test
     from tests.expression import lTest
 
-    test(lTest, CExpression(), 'test_expression.tpl', 'expression')
-    print "All test passed."
+    test(lTest, CExpression(), "test_expression.tpl", "expression")
+    print("All test passed.")

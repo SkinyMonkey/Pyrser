@@ -25,7 +25,7 @@ class SlotExpressionFunctor(type):
         """
         A metaclass to slot the bnf primitive functors.
         """
-        dDct['__slots__'] = {'__lPredicats': None}
+        dDct["__slots__"] = {"__lPredicats": None}
         return type.__new__(oCls, sName, lBases, dDct)
 
 
@@ -129,6 +129,7 @@ def lookAhead(*lPredicats):
     """
     return allTrue(*lPredicats)
 
+
 # FIXME : context pb?
 
 
@@ -152,6 +153,7 @@ def n(oPredicat, nFrom, nTo=None):
         return nCount == nFrom
     return nCount >= nFrom and nCount <= nTo
 
+
 ##### functors:
 
 
@@ -159,6 +161,7 @@ class ZeroOrOne:
     """
     []? bnf primitive as a functor
     """
+
     __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
@@ -172,6 +175,7 @@ class ZeroOrN:
     """
     []* bnf primitive as a functor
     """
+
     __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
@@ -185,6 +189,7 @@ class OneOrN:
     """
     []+ bnf primitive as a functor
     """
+
     __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
@@ -198,6 +203,7 @@ class Expression:
     """
     [] bnf primitive as a functor
     """
+
     __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
@@ -211,6 +217,7 @@ class Alt:
     """
     [] | [] bnf primitive as a functor
     """
+
     __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
@@ -224,6 +231,7 @@ class Until:
     """
     ->[] bnf primitive as a functor
     """
+
     __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
@@ -237,6 +245,7 @@ class Negation:
     """
     ![] bnf primitive as a functor
     """
+
     __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
@@ -250,6 +259,7 @@ class Complement:
     """
     ~[] bnf primitive as a functor
     """
+
     __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
@@ -263,6 +273,7 @@ class LookAhead(object):
     """
     =[] bnf primitive as a functor
     """
+
     __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
@@ -276,6 +287,7 @@ class N:
     """
     {} bnf primitive as a functor
     """
+
     def __init__(self, oPredicat, nFrom, nTo=None):
         self.__oPredicat = oPredicat
         self.__nFrom = nFrom

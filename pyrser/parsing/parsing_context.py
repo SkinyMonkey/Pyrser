@@ -27,4 +27,5 @@ def parsingContext(oTarget):
             return Parsing.oBaseParser.validContext()
         Parsing.oBaseParser.restoreContext()
         return False
+
     return wrapper

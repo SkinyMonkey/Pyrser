@@ -31,6 +31,7 @@ class Kooc(CDeclaration):
     callback ::= "@callback" #identifier ';'
     ;
     """
+
     def __init__(self):
         CDeclaration.__init__(self)
         Kooc.__init__(self, CDeclaration, CDeclaration.__doc__, globals())

@@ -14,25 +14,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#from types import DictType, ListType
+# from types import DictType, ListType
 from copy import copy
 
 from functools import wraps
 
 
 def new_node(oParent, sType=None):
-    if oParent != None\
-            and id(oParent) in oParent:
+    if oParent != None and id(oParent) in oParent:
         oNode = oParent[id(oParent)]
-        oNode['parent'] = oParent
-# FIXME : faire tests pour savoir si c'est bon
-        # del oParent[id(oParent)]
+        oNode["parent"] = oParent
+    # FIXME : faire tests pour savoir si c'est bon
+    # del oParent[id(oParent)]
     else:
-        oNode = {'parent': oParent}
+        oNode = {"parent": oParent}
 
-    if sType != None\
-            and 'type' not in oNode:
-        oNode['type'] = sType
+    if sType != None and "type" not in oNode:
+        oNode["type"] = sType
     return oNode
 
 
@@ -40,7 +38,7 @@ def node(sType=None):
     def wrapper(oTarget):
         @wraps(oTarget)
         def wrapped(*lArgs):
-            #if type(lArgs[0]) != DictType:
+            # if type(lArgs[0]) != DictType:
             if type(lArgs[0]) is not dict:
                 oNode = new_node(lArgs[1], sType)
                 bRes = oTarget(lArgs[0], oNode)
@@ -48,24 +46,30 @@ def node(sType=None):
                 oNode = new_node(lArgs[0], sType)
                 bRes = oTarget(oNode)
             return bRes
+
         return wrapped
+
     return wrapper
 
 
 def clean_tree(oParent, sName):
-    #if type(oParent) == DictType:
+    # if type(oParent) == DictType:
     if type(oParent) is dict:
         for iKey, iValue in oParent.iteritems():
-            if iKey != 'parent'\
-                    and iValue != oParent:
+            if iKey != "parent" and iValue != oParent:
                 clean_tree(iValue, sName)
         if sName in oParent:
             del oParent[sName]
-    #elif type(oParent) == ListType:
+    # elif type(oParent) == ListType:
     elif type(oParent) is list:
         for iValue in oParent:
             if iValue != oParent:
                 clean_tree(iValue, sName)
+
+
+def clean_tree_from_metadata(oRoot):
+    clean_tree(oRoot, "parent")
+    clean_tree(oRoot, "type")
 
 
 def slide(oNode, sName):
@@ -75,8 +79,8 @@ def slide(oNode, sName):
         del oTmp[id(oNode)]
     oNode[sName] = oTmp
 
-    oNode['parent'] = oTmp['parent']
-    oTmp['parent'] = oNode
+    oNode["parent"] = oTmp["parent"]
+    oTmp["parent"] = oNode
     return oNode
 
 

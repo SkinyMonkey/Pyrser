@@ -2,14 +2,15 @@ from copy import copy
 
 
 class AsciiParseContext:
-    def __init__(self, nIndex = 0, nCol = 1, nLine = 1, sWsList = " \r\n\t"):
+    def __init__(self, nIndex=0, nCol=1, nLine=1, sWsList=" \r\n\t"):
         self.nIndex = nIndex
         self.nCol = nCol
         self.nLine = nLine
         self.sWsList = sWsList
 
+
 class Stream:
-    def __init__(self, sString = "", sName = "stream", sIgnore = " \r\n\t"):
+    def __init__(self, sString="", sName="stream", sIgnore=" \r\n\t"):
         self.__neofPos = len(sString)
         self.__sString = sString
         self.__sName = sName
@@ -18,8 +19,7 @@ class Stream:
     def __context(self):
         return self.__lContext[-1]
 
-##### public:
-
+    ##### public:
     def saveContext(self):
         self.__lContext.append(copy(self.__context()))
 
@@ -55,7 +55,13 @@ class Stream:
             nInc -= 1
 
     def getChar(self):
+        #        print(self.__context().nIndex, "/", len(self.__sString))
+        #        try:
         return self.__sString[self.__context().nIndex]
+
+    #        except Exception as e:
+    #            print("FAILED ON GETCHAR:")
+    #            print(self.__sString[self.__context().nIndex - 20: self.__context().nIndex - 1])
 
     def getCharAt(self, nIndex):
         return self.__sString[nIndex]
@@ -84,12 +90,12 @@ class Stream:
         return self.__sString[begin:end]
 
     def getContentRelative(self, begin):
-        return self.__sString[begin:self.__context().nIndex]
+        return self.__sString[begin : self.__context().nIndex]
 
     def printStream(self, nIndex):
         while nIndex < self.__neofPos:
             if self.getCharAt(nIndex).isalnum() == False:
-                print('0x%x' % ord(self.getCharAt(nIndex)))
+                print("0x%x" % ord(self.getCharAt(nIndex)))
             else:
                 print(self.getCharAt(nIndex))
         nIndex += 1

@@ -96,6 +96,11 @@ enum {{decl.type_specifier}}
 {{ctype(decl.ctype)}} {{array(decl)}};
 {%- endmacro -%}
 
+{#- not the best way to do this-#}
+{%- macro __struct_field__(decl) -%}
+{{ctype(decl.ctype)}} {{array(decl)}}
+{%- endmacro -%}
+
 {%- macro __declaration__(decl) -%}
 {{getattr(self, decl.ctype.type)(decl)}};
 {%- endmacro -%}

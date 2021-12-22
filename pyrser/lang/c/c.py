@@ -14,29 +14,38 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-c =\
-    {
-        'builtins':
-        {'identifier': 'readIdentifier', 'num': 'readInteger', 'string': 'readCString', 'cchar': 'readCChar', 'char': 'readAChar', 'space': 'readWs', 'end': 'readUntilEOF', 'empty': 'readEOF', 'super': 'super', 'notIgnore': 'notIgnore', 'false': 'false', 'readThisChar': 'readChar', 'readThisText': 'readText'},
-
-        'not': {'!': 'negation', '~': 'complementary'},
-
-        'multiplier': {'?': 'zeroOrOne', '+': 'oneOrN', '*': 'zeroOrN', '[]': 'expression'},
-
-        'keyword': {'and': '&&', 'object': ''},
-        'accessOperator': '',
-        'alt': 'alt',
-        'baseParserMethod': '',
-        'upPrimitives': 'False',
-        'indent': 6,
-        'file_extension': '.c'
-    }
+c = {
+    "builtins": {
+        "identifier": "readIdentifier",
+        "num": "readInteger",
+        "string": "readCString",
+        "cchar": "readCChar",
+        "char": "readAChar",
+        "space": "readWs",
+        "end": "readUntilEOF",
+        "empty": "readEOF",
+        "super": "super",
+        "notIgnore": "notIgnore",
+        "false": "false",
+        "readThisChar": "readChar",
+        "readThisText": "readText",
+    },
+    "not": {"!": "negation", "~": "complementary"},
+    "multiplier": {"?": "zeroOrOne", "+": "oneOrN", "*": "zeroOrN", "[]": "expression"},
+    "keyword": {"and": "&&", "object": ""},
+    "accessOperator": "",
+    "alt": "alt",
+    "baseParserMethod": "",
+    "upPrimitives": "False",
+    "indent": 6,
+    "file_extension": ".c",
+}
 
 from imp import load_source
 
 
 def cPostGeneration(sModuleName, sFile, sToFile, sGrammar, oInstance):
-    print 'c file generation over'
+    print("c file generation over")
     # FIXME : add compilation of example
     # generate a main function and call start rule in it
     # compile with gcc -I lib/lang/c/includes -L lib/lang/clib

@@ -37,7 +37,8 @@ class ReadText(object):
     """
     Encapsulation of the 'readText' primitive into a functor.
     """
-    __slots__ = {'__name__': 'ReadText', '__sText': None}
+
+    __slots__ = {"__name__": "ReadText", "__sText": None}
 
     def __init__(self, sText):
         self.__sText = sText
@@ -50,7 +51,8 @@ class ReadChar(object):
     """
     Encapsulation of the 'readChar' primitive into a functor.
     """
-    __slots__ = {'__name__': 'ReadChar', '__cChar': None}
+
+    __slots__ = {"__name__": "ReadChar", "__cChar": None}
 
     def __init__(self, cChar):
         self.__cChar = cChar
@@ -63,7 +65,8 @@ class ReadUntil(object):
     """
     Encapsulation of the 'readUntil' primitive into a functor.
     """
-    __slots__ = {'__name__': 'ReadUntil', '__cChar': None}
+
+    __slots__ = {"__name__": "ReadUntil", "__cChar": None}
 
     def __init__(self, cChar):
         self.__cChar = cChar
@@ -76,9 +79,8 @@ class ReadRange:
     """
     Encapsulation of the 'readRange' primitive into a functor.
     """
-    __slots__ = {'__name__': 'ReadRange',
-                 '__cBegin': None,
-                 '__cEnd': None}
+
+    __slots__ = {"__name__": "ReadRange", "__cBegin": None, "__cEnd": None}
 
     def __init__(self, cBegin, cEnd):
         self.__cBegin = cBegin
@@ -92,7 +94,8 @@ class NonTerminal:
     """
     Encapsulate nonTerminal rule execution into a functor.
     """
-    __slots__ = ('__oPredicat', '__oNode')
+
+    __slots__ = ("__oPredicat", "__oNode")
 
     def __init__(self, oPredicat, oNode):
         self.__oPredicat = oPredicat
@@ -106,7 +109,8 @@ class Hook:
     """
     Encapsulate hook execution into a functor.
     """
-    __slots__ = ('__oPredicat', '__oNode')
+
+    __slots__ = ("__oPredicat", "__oNode")
 
     def __init__(self, oPredicat, oNode, *lArgs):
         self.__oPredicat = oPredicat
@@ -121,7 +125,8 @@ class Super:
     """
     Encapsulate super() function into a functor.
     """
-    __slots__ = ('__oParentClass', '__oTarget', '__sRuleName', '__oNode')
+
+    __slots__ = ("__oParentClass", "__oTarget", "__sRuleName", "__oNode")
 
     def __init__(self, oParentClass, oTarget, sRuleName, oNode):
         self.__oParentClass = oParentClass
@@ -130,14 +135,16 @@ class Super:
         self.__oNode = oNode
 
     def __call__(self):
-        return getattr(self.__oParentClass, self.__sRuleName)\
-            (self.__oTarget, self.__oNode)
+        return getattr(self.__oParentClass, self.__sRuleName)(
+            self.__oTarget, self.__oNode
+        )
 
 
 class NotIgnore:
     """
     Encapsulate notIgnore directive into a functor.
     """
+
     __slots__ = ()
 
     def __call__(self):
@@ -148,6 +155,7 @@ class FalseDirective:
     """
     Return false to ease debug.
     """
+
     __slots__ = ()
 
     def __call__(self):
@@ -158,6 +166,7 @@ class ResetIgnore(object):
     """
     Encapsulate ResetIgnore directive into a functor.
     """
+
     __slots__ = ()
 
     def __init__(self):

@@ -20,25 +20,25 @@ from Cython.Distutils import build_ext
 from os.path import abspath
 from os import chdir
 
-compilePath = abspath('.') + "/pyrser/parsing/cpp/"
+compilePath = abspath(".") + "/pyrser/parsing/cpp/"
 
-asciiParse = Extension('asciiParse',
-                       include_dirs=['/usr/include', '/usr/local/include',
-                                     compilePath, compilePath + "csrcs"],
-                       sources=
-                       [
-                       compilePath + 'asciiParse.pyx',
-                       compilePath + 'csrcs/asciiParsePrimitives.cpp',
-                       compilePath + 'csrcs/Stream.cpp'
-                       ],
-                       # Uncomment to add GDB debug symbols.
-                       extra_compile_args=["-g3"],
-                       extra_link_args=["-g3"],
-                       language="c++")
-
-setup(
-    cmdclass={'build_ext': build_ext},
-    ext_modules=[
-        asciiParse
-    ]
+asciiParse = Extension(
+    "asciiParse",
+    include_dirs=[
+        "/usr/include",
+        "/usr/local/include",
+        compilePath,
+        compilePath + "csrcs",
+    ],
+    sources=[
+        compilePath + "asciiParse.pyx",
+        compilePath + "csrcs/asciiParsePrimitives.cpp",
+        compilePath + "csrcs/Stream.cpp",
+    ],
+    # Uncomment to add GDB debug symbols.
+    extra_compile_args=["-g3"],
+    extra_link_args=["-g3"],
+    language="c++",
 )
+
+setup(cmdclass={"build_ext": build_ext}, ext_modules=[asciiParse])

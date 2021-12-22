@@ -26,8 +26,7 @@ def capture(oPredicat, sName, dDict, bConsumeWs=True):
     Parsing.oBaseParser.setTag(sName)
     bRes = oPredicat()
     if bRes:
-        if ((sName in dDict) == False
-                or not isinstance(dDict[sName], type({}))):
+        if (sName in dDict) == False or not isinstance(dDict[sName], type({})):
             dDict[sName] = Parsing.oBaseParser.getTag(sName)
     return bRes
 
@@ -36,6 +35,7 @@ class Capture(object):
     """
     Capture function functor.
     """
+
     def __init__(self, oPredicat, sName, dDict, bConsumeWs=True):
         self.__oPredicat = oPredicat
         self.__sName = sName
@@ -43,6 +43,4 @@ class Capture(object):
         self.__bConsumeWs = bConsumeWs
 
     def __call__(self):
-        return\
-            capture(self.__oPredicat, self.__sName,
-                    self.__dDict, self.__bConsumeWs)
+        return capture(self.__oPredicat, self.__sName, self.__dDict, self.__bConsumeWs)

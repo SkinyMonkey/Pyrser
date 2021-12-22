@@ -1,5 +1,3 @@
-/* vim: set filetype=ocaml : */
-
 expression ::= @_ assignment :captured #captured_something
 ;
 
@@ -40,7 +38,7 @@ unary ::=
         ['-' | '&' | '*' | "++" | "--"] :op #type_next("unary", "subexpr")
         | '(' type_name :op ')' #type_next("cast", "subexpr")
       ]
-      unary // (*FIXME : infinite loop if put after the oneZero expression*)
+      unary 
     ]?
   ]
 ;

@@ -4,11 +4,7 @@ from expression import CExpression
 
 
 class CStatement(GenericHook, Grammar):
-    def __init__(self):
-        GenericHook.__init__(self)
-        Grammar.__init__(self, CStatement,
-                         open("./grammar/statement.pw").read(),
-                         globals())
+    __grammar__ = open("./dev/cnorm/grammar/statement.pw").read()
 
     def typeHook(self, oNode, sSubExpr, sType="__statement__"):
         """
@@ -18,11 +14,13 @@ class CStatement(GenericHook, Grammar):
         oNode["sub_type"] = sSubExpr
         return oNode
 
-if __name__ != '__main__':
+
+print(__name__)
+if __name__ != "__main__":
     CStatement()
 else:
     from tests.test import test
     from tests.statement import lTest
 
-    test(lTest, CStatement(), 'test_statement.tpl', 'statement')
-    print "All test passed."
+    test(lTest, CStatement(), "test_statement.tpl", "statement")
+    print("All test passed.")

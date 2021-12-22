@@ -19,7 +19,9 @@ from pyrser.parsing.python.AsciiParseWrapper import AsciiParseWrapper
 
 class Parsing(object):
     oParserClass = AsciiParseWrapper
-    oBaseParser = oParserClass('')
+    oBaseParser = oParserClass("")
+
+
 #      oFinalParser = oBaseParser
 
 
@@ -31,5 +33,7 @@ def setBaseParser(oBaseParser):
     Parsing.oBaseParser = oBaseParser
 
 
-def resetBaseParser(sStream="", sIgnore=" \r\n\t", sCLine="//", sCBegin="/*", sCEnd="*/"):
+def resetBaseParser(
+    sStream="", sIgnore=" \r\n\t", sCLine="//", sCBegin="/*", sCEnd="*/"
+):
     setBaseParser(getParserClass()(sStream, sIgnore, sCLine, sCBegin, sCEnd))

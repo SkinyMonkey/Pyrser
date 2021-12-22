@@ -21,32 +21,94 @@ from pyrser.code_generation import python
 # TODO(bps): factor those imports for generated code
 from pyrser.parsing.capture import capture, Capture
 from pyrser.parsing.parsing_context import parsingContext, Parsing
-from pyrser.parsing.directive_functor import NonTerminal, ReadChar, Hook, ReadText, ReadRange
-from pyrser.parsing.bnf_primitives import zeroOrN, Expression, oneOrN, expression, Alt, ZeroOrOne, Negation, N, Until, alt, complement, zeroOrOne, negation, n, until
+from pyrser.parsing.directive_functor import (
+    NonTerminal,
+    ReadChar,
+    Hook,
+    ReadText,
+    ReadRange,
+)
+from pyrser.parsing.bnf_primitives import (
+    alt,
+    Alt,
+    complement,
+    Complement,
+    expression,
+    Expression,
+    n,
+    N,
+    negation,
+    Negation,
+    oneOrN,
+    OneOrN,
+    until,
+    Until,
+    zeroOrN,
+    ZeroOrN,
+    zeroOrOne,
+    ZeroOrOne,
+)
 from pyrser.lang.python import python as dLangConf
+
+grammar_marker = "!grammar"
 
 
 class GrammarBase(type):
-    """Metaclass for all grammars."""
+    """
+    A metaclass that augment a class based on a grammar definition.
+    It stores defined grammars into $grammars so it can be reused when doing composition
+    """
+
+    grammars = {}
+    directives = {}
+
+    @staticmethod
+    def directive(fn):
+        GrammarBase.directives[fn.__name__] = fn
+        return fn
+
     def __new__(mcs, name, bases, dict_):
-        grammar = dict_.get('grammar')
-        if grammar is not None:
-            ast = dsl_parser.parse(grammar, {}, name)
-            generated_code = (
-                python.Python(dLangConf).translation(name, ast['rules']))
-            byte_code = compile(generated_code, "<%s>" % name, "exec")
-            globals_ = dict_.get('globals')
-            if globals_ is None:
-                globals_ = globals()
+        grammar = dict_.get("__grammar__")
+        if grammar is None:
+            grammar = dict_.get("__doc__")
+            if grammar is not None and grammar.startswith(grammar_marker):
+                grammar = grammar[len(grammar_marker) :]
             else:
-                globals_.update(globals())
-            dict_['globals'] = globals_
-            eval(byte_code, globals_, locals())
-            compiled_grammar = locals()['CompiledGrammar']
+                grammar = None
+
+        if grammar is not None:
+            # We parse the grammar, generate code from it and compile it to bytecode
+            ast = dsl_parser.parse(grammar, {}, name)
+            generated_code = python.Python(dLangConf).translation(name, ast["rules"])
+            # FIXME : remove, DEBUG
+            #            open("/tmp/res", 'w+').write(generated_code)
+            byte_code = compile(generated_code, "<%s>" % name, "exec")
+
+            # We add the previously generated grammars and the defined directives to the global definitions
+            # that should be used by the evaluated code
+            # so that it can call them
+            augmented_globals = globals().copy()
+            augmented_globals.update(GrammarBase.grammars)
+            augmented_globals.update(GrammarBase.directives)
+
+            # The byte code is added to the current runtime
+            eval(byte_code, augmented_globals, locals())
+
+            # We add the compiled functions to the dict_ of the class
+            # we are creating with the metaclass
+            compiled_grammar = locals()["%sGrammar" % name]
             for key, value in compiled_grammar.__dict__.iteritems():
                 if callable(value):
                     dict_[key] = value
-        return type.__new__(mcs, name, bases, dict_)
+
+        elif name != "Grammar":
+            print("Grammar could not be found in %s" % name)
+
+        # instantiate the new class
+        cls = type.__new__(mcs, name, bases, dict_)
+        if grammar is not None:
+            GrammarBase.grammars[name] = cls
+        return cls
 
 
 class Grammar(object):
@@ -59,13 +121,15 @@ class Grammar(object):
     """
 
     __metaclass__ = GrammarBase
-    grammar = None
-    globals = None
 
-    def parse(self, source, ast, rule_name):
+    @staticmethod
+    def directive(fn):
+        return GrammarBase.directive(fn)
+
+    def parse(self, source, ast, rule_name="main"):
         """Parse the grammar"""
 
-        func_name = '%sRule' % rule_name
+        func_name = "%sRule" % rule_name
         node.next_is(ast, ast)
         dsl_parser.Parsing.oBaseParser.parsedStream(source)
         if not hasattr(self, func_name):

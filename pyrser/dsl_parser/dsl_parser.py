@@ -41,116 +41,133 @@ def globalDescRule(oRoot):
     ;
     """
     if not oneOrN(NonTerminal(rulesRule, oRoot)):
-        raise GrammarException('%s doesn\'t seems to be a valid grammar file.' %
-                               Parsing.oBaseParser.getName())
+        raise GrammarException(
+            "%s doesn't seems to be a valid grammar file."
+            % Parsing.oBaseParser.getName()
+        )
     Parsing.oBaseParser.readIgnored()
     return Parsing.oBaseParser.readEOF()
 
 
-@node('rule')
+@node("rule")
 @parsingContext
 def rulesRule(oNode):
     """
     rules ::= rule_name "::=" clauses ';'
     ;
     """
-    if ruleNameRule(oNode)\
-        and alt(ReadText('::='), Error('\'::=\' missing'))\
-        and alt(NonTerminal(clausesRule, oNode),
-                Error('No clauses found in this rule : %s'
-                      % oNode['prototype']['name']))\
-        and alt(ReadChar(';'), Error('\';\' missing'))\
-            and rulesHook(oNode):
+    if (
+        ruleNameRule(oNode)
+        and alt(ReadText("::="), Error("'::=' missing"))
+        and alt(
+            NonTerminal(clausesRule, oNode),
+            Error("No clauses found in this rule : %s" % oNode["prototype"]["name"]),
+        )
+        and alt(ReadChar(";"), Error("';' missing"))
+        and rulesHook(oNode)
+    ):
         return True
     return False
 
+
 # FIXME : how to know if it is name or '{' the pb
-#	    	or Error('No name given to current rule.')():
+# 	    	or Error('No name given to current rule.')():
 #    and alt(Capture(Parsing.oBaseParser.readIdentifier, 'name', oNode)
 #  		,Error('No name given to current rule.'))\
 
 
-@node('rule_name')
+@node("rule_name")
 @parsingContext
 def ruleNameRule(oNode):
     """
     rule_name ::= #identifier [rule_directive]*
     ;
     """
-    if capture(Parsing.oBaseParser.readIdentifier, 'name', oNode)\
-        and zeroOrN(NonTerminal(ruleDirectiveRule, oNode))\
-            and rule_nameHook(oNode):
+    if (
+        capture(Parsing.oBaseParser.readIdentifier, "name", oNode)
+        and zeroOrN(NonTerminal(ruleDirectiveRule, oNode))
+        and rule_nameHook(oNode)
+    ):
         return True
     return False
 
 
-@node('param')
+@node("param")
 @parsingContext
 def paramRule(oNode):
     """
     param ::= '(' -> ')'
     """
-    if capture(Expression(
-               ReadChar('('), ReadUntil(')'))        , 'param', oNode)\
-            and paramHook(oNode):
+    if capture(Expression(ReadChar("("), ReadUntil(")")), "param", oNode) and paramHook(
+        oNode
+    ):
         return True
     return False
+
 
 # FIXME : type is useles, remove after debug
 
 
-@node('rule_directive')
+@node("rule_directive")
 @parsingContext
 def ruleDirectiveRule(oNode):
     """
     rule_directive ::= '@' #identifier [ param ]?
     ;
     """
-    if Parsing.oBaseParser.readChar('@')\
-        and capture(Parsing.oBaseParser.readIdentifier, 'name', oNode)\
-        and zeroOrOne(NonTerminal(paramRule, oNode))\
-            and rule_directiveHook(oNode):
+    if (
+        Parsing.oBaseParser.readChar("@")
+        and capture(Parsing.oBaseParser.readIdentifier, "name", oNode)
+        and zeroOrOne(NonTerminal(paramRule, oNode))
+        and rule_directiveHook(oNode)
+    ):
         return True
     return False
 
 
-@node('clause')
+@node("clause")
 @parsingContext
 def clausesRule(oNode):
     """
     clauses ::= alternative ['|' alternative ]*
     ;
     """
-    if headclausesHook(oNode)\
-        and alternativeRule(oNode)\
-        and clausesHook(oNode)\
-        and zeroOrN(ReadChar('|'),
-                    Hook(tailclausesHook, oNode),
-                    Alt(
-                    Expression(
-                        NonTerminal(alternativeRule, oNode),
-                        Hook(clausesHook, oNode)),
-                    Error(
-                    'Alternative found but no clauses in it.'))):
+    if (
+        headclausesHook(oNode)
+        and alternativeRule(oNode)
+        and clausesHook(oNode)
+        and zeroOrN(
+            ReadChar("|"),
+            Hook(tailclausesHook, oNode),
+            Alt(
+                Expression(
+                    NonTerminal(alternativeRule, oNode), Hook(clausesHook, oNode)
+                ),
+                Error("Alternative found but no clauses in it."),
+            ),
+        )
+    ):
         return True
     return False
 
 
-@node('capture')
+@node("capture")
 @parsingContext
 def captureRule(oNode):
     """
     capture ::= ':' #identifier
     ;
     """
-    if Parsing.oBaseParser.readChar(':')\
-        and capture(Parsing.oBaseParser.readIdentifier, 'name', oNode)\
-            and captureHook(oNode):
+    if (
+        Parsing.oBaseParser.readChar(":")
+        and capture(Parsing.oBaseParser.readIdentifier, "name", oNode)
+        and captureHook(oNode)
+    ):
         return True
     return False
 
 
-@node('alternative')
+@node("alternative")
 @parsingContext
 def alternativeRule(oNode):
     """
@@ -163,70 +180,81 @@ def alternativeRule(oNode):
     """
     if oneOrN(
         Expression(
-
-            ZeroOrOne(Expression(
-                      Capture(ReadChar('@'), 'wrapper', oNode), Capture(
-                      Parsing.oBaseParser.readIdentifier, 'name', oNode), ZeroOrOne(
-                          NonTerminal(paramRule, oNode)))),
-
+            ZeroOrOne(
+                Expression(
+                    Capture(ReadChar("@"), "wrapper", oNode),
+                    Capture(Parsing.oBaseParser.readIdentifier, "name", oNode),
+                    ZeroOrOne(NonTerminal(paramRule, oNode)),
+                )
+            ),
             Alt(
                 NonTerminal(terminalRule, oNode),
                 NonTerminal(NonTerminalRule, oNode),
                 NonTerminal(untilRule, oNode),
-                NonTerminal(lookAheadRule, oNode)),
-
+                NonTerminal(lookAheadRule, oNode),
+            ),
             ZeroOrOne(NonTerminal(captureRule, oNode)),
-            Hook(alternativeHook, oNode))):
+            Hook(alternativeHook, oNode),
+        )
+    ):
         return True
     return False
 
 
-@node('nonTerminal')
+@node("nonTerminal")
 @parsingContext
 def NonTerminalRule(oNode):
     """
-    NonTerminal ::= #identifier [ '.' #identifier ]?
+    NonTerminal ::= #identifier [ "::" #identifier ]?
     ;
     """
-    if capture(Parsing.oBaseParser.readIdentifier, 'name', oNode)\
-        and zeroOrOne(ReadText("::"), Alt(
-                      Capture(Parsing.oBaseParser.readIdentifier,
-                              'aggregation', oNode)                    , Error('Malformed composed nonTerminal.')))\
-            and nonTerminalHook(oNode):
+    if (
+        capture(Parsing.oBaseParser.readIdentifier, "name", oNode)
+        and zeroOrOne(
+            ReadText("::"),
+            Alt(
+                Capture(Parsing.oBaseParser.readIdentifier, "aggregation", oNode),
+                Error("Malformed composed nonTerminal."),
+            ),
+        )
+        and nonTerminalHook(oNode)
+    ):
         return True
     return False
 
 
-@node('directive')
+@node("directive")
 @parsingContext
 def directiveRule(oNode):
     """
     directive ::= '#' #identifier [ param ]?
     ;
     """
-    if Parsing.oBaseParser.readChar('#')\
+    if (
+        Parsing.oBaseParser.readChar("#")
         and alt(
-            Capture(Parsing.oBaseParser.readIdentifier, 'name', oNode)            , Error('Uncomplete directive.'))\
-        and zeroOrOne(NonTerminal(paramRule, oNode))\
-            and directiveHook(oNode):
+            Capture(Parsing.oBaseParser.readIdentifier, "name", oNode),
+            Error("Uncomplete directive."),
+        )
+        and zeroOrOne(NonTerminal(paramRule, oNode))
+        and directiveHook(oNode)
+    ):
         return True
     return False
 
 
-@node('cstring')
+@node("cstring")
 @parsingContext
 def cString(oNode):
-    if capture(Parsing.oBaseParser.readCString, 'string', oNode)\
-            and cStringHook(oNode):
+    if capture(Parsing.oBaseParser.readCString, "string", oNode) and cStringHook(oNode):
         return True
     return False
 
 
-@node('cchar')
+@node("cchar")
 @parsingContext
 def cChar(oNode):
-    if capture(Parsing.oBaseParser.readCChar, 'string', oNode)\
-            and cCharHook(oNode):
+    if capture(Parsing.oBaseParser.readCChar, "string", oNode) and cCharHook(oNode):
         return True
     return False
 
@@ -239,69 +267,82 @@ def carRule(oNode):
     return alt(NonTerminal(cString, oNode), NonTerminal(cChar, oNode))
 
 
-@node('range')
+@node("range")
 @parsingContext
 def rangeRule(oNode):
     """
     range ::= car ".." car
     ;
     """
-    if capture(Parsing.oBaseParser.readCChar, 'from', oNode)\
-        and Parsing.oBaseParser.readText('..')\
+    if (
+        capture(Parsing.oBaseParser.readCChar, "from", oNode)
+        and Parsing.oBaseParser.readText("..")
         and alt(
-            Capture(Parsing.oBaseParser.readCChar, 'to', oNode),
-            Error('Range incomplete.'))\
-            and rangeHook(oNode):
+            Capture(Parsing.oBaseParser.readCChar, "to", oNode),
+            Error("Range incomplete."),
+        )
+        and rangeHook(oNode)
+    ):
         return True
     return False
 
 
-@node('expr')
+@node("expr")
 @parsingContext
 def exprRule(oNode):
     """
     expr ::= '[' clauses ']'
     ;
     """
-    if Parsing.oBaseParser.readChar('[')\
-        and alt(NonTerminal(clausesRule, oNode)                , Error('Empty expression.'))\
-        and alt(ReadChar(']')                 , Error('\']\' missing.'))\
-            and exprHook(oNode):
+    if (
+        Parsing.oBaseParser.readChar("[")
+        and alt(NonTerminal(clausesRule, oNode), Error("Empty expression."))
+        and alt(ReadChar("]"), Error("']' missing."))
+        and exprHook(oNode)
+    ):
         return True
     return False
 
 
-@node('until')
+@node("until")
 @parsingContext
 def untilRule(oNode):
     """
     until ::= "->" terminal
     ;
     """
-    if Parsing.oBaseParser.readText('->')\
-        and alt(NonTerminal(terminalRule, oNode), Error(
-                'No expression found after until (\'->\') sign.'))\
-            and untilHook(oNode):
+    if (
+        Parsing.oBaseParser.readText("->")
+        and alt(
+            NonTerminal(terminalRule, oNode),
+            Error("No expression found after until ('->') sign."),
+        )
+        and untilHook(oNode)
+    ):
         return True
     return False
 
 
-@node('lookAhead')
+@node("lookAhead")
 @parsingContext
 def lookAheadRule(oNode):
     """
     lookAhead ::= "=" terminal
     ;
     """
-    if Parsing.oBaseParser.readText('=')\
-        and alt(NonTerminal(terminalRule, oNode), Error(
-                'No expression found after a look ahead (\'=\') sign.'))\
-            and lookAheadHook(oNode):
+    if (
+        Parsing.oBaseParser.readText("=")
+        and alt(
+            NonTerminal(terminalRule, oNode),
+            Error("No expression found after a look ahead ('=') sign."),
+        )
+        and lookAheadHook(oNode)
+    ):
         return True
     return False
 
 
-@node('terminal')
+@node("terminal")
 @parsingContext
 def terminalRule(oNode):
     """
@@ -315,35 +356,60 @@ def terminalRule(oNode):
               ]?
     ;
     """
-    if zeroOrOne(Alt(
-                 Capture(ReadChar('!'), 'not', oNode)                      , Capture(ReadChar('~'), 'not', oNode)))\
-        and alt(NonTerminal(directiveRule, oNode), NonTerminal(exprRule, oNode)                , NonTerminal(rangeRule, oNode)                , NonTerminal(carRule, oNode))\
+    if (
+        zeroOrOne(
+            Alt(
+                Capture(ReadChar("!"), "not", oNode),
+                Capture(ReadChar("~"), "not", oNode),
+            )
+        )
+        and alt(
+            NonTerminal(directiveRule, oNode),
+            NonTerminal(exprRule, oNode),
+            NonTerminal(rangeRule, oNode),
+            NonTerminal(carRule, oNode),
+        )
         and zeroOrOne(
             Alt(
-            Alt(
-                Capture(ReadChar('*'), 'multiplier',
-                        oNode), Capture(ReadChar('+'), 'multiplier', oNode)                , Capture(ReadChar('?'), 'multiplier', oNode)            , NonTerminal(readTerminalRangeRule, oNode))))\
-            and terminalHook(oNode):
+                Alt(
+                    Capture(ReadChar("*"), "multiplier", oNode),
+                    Capture(ReadChar("+"), "multiplier", oNode),
+                    Capture(ReadChar("?"), "multiplier", oNode),
+                    NonTerminal(readTerminalRangeRule, oNode),
+                )
+            )
+        )
+        and terminalHook(oNode)
+    ):
         return True
     return False
+
 
 # FIXME : complete error gestion
 
 
-@node('terminal_range')
+@node("terminal_range")
 @parsingContext
 def readTerminalRangeRule(oNode):
     """
     terminal_range = '{' #num ["," #num]? '}'
     ;
     """
-    if Parsing.oBaseParser.readChar('{')\
-            and alt(
-                Capture(Parsing.oBaseParser.readInteger, 'from', oNode)                    , Error('No number found in terminal Range.'))\
-            and zeroOrOne(
-                ReadChar(','), Alt(
-                    Capture(Parsing.oBaseParser.readInteger, 'to', oNode)                      , Error('Second number missing in terminal range.')))\
-            and Parsing.oBaseParser.readChar('}')\
-            and read_terminalRangeHook(oNode):
+    if (
+        Parsing.oBaseParser.readChar("{")
+        and alt(
+            Capture(Parsing.oBaseParser.readInteger, "from", oNode),
+            Error("No number found in terminal Range."),
+        )
+        and zeroOrOne(
+            ReadChar(","),
+            Alt(
+                Capture(Parsing.oBaseParser.readInteger, "to", oNode),
+                Error("Second number missing in terminal range."),
+            ),
+        )
+        and Parsing.oBaseParser.readChar("}")
+        and read_terminalRangeHook(oNode)
+    ):
         return True
     return False

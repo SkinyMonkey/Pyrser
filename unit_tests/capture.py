@@ -3,16 +3,13 @@ from pyrser.grammar import Grammar
 
 
 class CaptureGeneration(Grammar):
-    grammar = """
-      parentTest ::= #num :test captureTest
-      ;
+    """!grammar
+    parentTest ::= #num :test captureTest
+    ;
 
-      captureTest ::= #identifier :test #test
-      ;
-      """
-#      def __init__(self):
-#          super(CaptureGeneration, self).__init__(CaptureGeneration,
-#                                                  CaptureGeneration.__doc__)
+    captureTest ::= #identifier :test #test
+    ;
+    """
 
     def testHook(self, oTreeContext):
         return True
@@ -26,6 +23,7 @@ class Capture_Test(unittest.TestCase):
 
     def test_capture(self):
         self.assertEqual(
-            Capture_Test.oGrammar.parse('123 id', self.oRoot, 'parentTest'),
+            Capture_Test.oGrammar.parse("123 id", self.oRoot, "parentTest"),
             True,
-            'failed in capture')
+            "failed in capture",
+        )

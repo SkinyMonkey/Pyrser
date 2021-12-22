@@ -19,17 +19,22 @@ from pyrser.parsing import Parsing
 
 class GrammarException(Exception):
     def __init__(self, sText):
-        super(Exception, self).__init__('In %s line %d column %d : %s'
-                                        % (Parsing.oBaseParser.getName(),
-                                           Parsing.oBaseParser.getLineNbr(),
-                                           Parsing.oBaseParser.getColumnNbr(),
-                                           sText))
+        super(Exception, self).__init__(
+            "In %s line %d column %d : %s"
+            % (
+                Parsing.oBaseParser.getName(),
+                Parsing.oBaseParser.getLineNbr(),
+                Parsing.oBaseParser.getColumnNbr(),
+                sText,
+            )
+        )
 
 
 class Error:
     """
     Local GrammarException encapsulation into a functor.
     """
+
     def __init__(self, sMsg):
         self.__sMsg = sMsg
 

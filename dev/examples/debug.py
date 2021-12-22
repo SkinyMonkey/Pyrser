@@ -5,7 +5,7 @@ from pprint import pprint
 
 
 class Debug(Grammar, GenericHook):
-    """
+    """!grammar
     debug ::= @next("sub") sub
     ;
 
@@ -18,13 +18,13 @@ class Debug(Grammar, GenericHook):
     foo ::= #num :num
     ;
     """
-    def __init__(self):
-        Grammar.__init__(self, Debug, Debug.__doc__)
-        GenericHook.__init__(self)
+
+    pass
+
 
 oGrammar = Debug()
 oRoot = {}
-print oGrammar.parse('123', oRoot, 'debug')
-clean_tree(oRoot, 'parent')
-clean_tree(oRoot, 'type')
+print(oGrammar.parse("123", oRoot, "debug"))
+clean_tree(oRoot, "parent")
+clean_tree(oRoot, "type")
 pprint(oRoot)

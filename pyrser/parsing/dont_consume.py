@@ -25,4 +25,5 @@ def dontConsume(oTarget):
         bRes = oTarget(*lArgs)
         Parsing.oBaseParser.restoreContext()
         return bRes
+
     return wrapper

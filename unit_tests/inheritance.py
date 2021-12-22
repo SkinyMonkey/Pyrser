@@ -3,39 +3,34 @@ from pyrser.grammar import Grammar
 
 
 class Father(Grammar):
-    grammar = """
-      operand ::= #num
-      ;
+    """!grammar
+    operand ::= #num
+    ;
 
-      sub ::= #identifier
-      ;
-      """
-#      def __init__(self):
-#          super(Father, self).__init__(Father, Father.__doc__, globals())
+    sub ::= #identifier
+    ;
+    """
 
 
 class Math(Father, Grammar):
-    grammar = """
-      operand ::= Father::operand '+' sub
-      ;
+    """!grammar
+    operand ::= Father::operand '+' sub
+    ;
 
-      sub ::= #num
-      ;
-      """
+    sub ::= #num
+    ;
+    """
+
     globals = globals()
-#      def __init__(self):
-#          Grammar.__init__(self, Math, Math.__doc__, globals())
 
 
 class MultiMath(Father, Grammar):
-    grammar = """
-      operand ::=  Father::operand ['+' Father::operand ]+
-      ;
-      """
+    """!grammar
+    operand ::=  Father::operand ['+' Father::operand ]+
+    ;
+    """
+
     globals = globals()
-#      def __init__(self):
-#          Grammar.__init__(self, MultiMath, MultiMath.__doc__, globals())
-#          Father() # for composition we need an instance
 
 
 class generatedCode(unittest.TestCase):
@@ -46,12 +41,14 @@ class generatedCode(unittest.TestCase):
 
     def test_inheritance(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse('12 + 4', self.oRoot, 'operand'),
+            generatedCode.oGrammar.parse("12 + 4", self.oRoot, "operand"),
             True,
-            'failed in inheritance')
+            "failed in inheritance",
+        )
 
     def test_inheritance_multi_depth(self):
         self.assertEqual(
-            MultiMath().parse('12 + 3 + 5', self.oRoot, 'operand'),
+            MultiMath().parse("12 + 3 + 5", self.oRoot, "operand"),
             True,
-            'failed in multi inheritance')
+            "failed in multi inheritance",
+        )

@@ -3,23 +3,21 @@ from functools import wraps
 from pyrser.grammar import Grammar
 
 
+@Grammar.directive
 def test(oRule):
     def wrapper(*lArgs):
         bRes = oRule(*lArgs)
-        lArgs[1]['rule_directive_test'] = True
+        lArgs[1]["rule_directive_test"] = True
         return bRes
+
     return wrapper
 
 
 class RuleDirective(Grammar):
-    grammar = """
-      rule_directive @test ::= #identifier
-      ;
-      """
-    globals = globals()
-#      def __init__(self):
-#          super(RuleDirective, self).__init__(RuleDirective,
-#					      RuleDirective.__doc__, globals())
+    """!grammar
+    rule_directive @test ::= #identifier
+    ;
+    """
 
 
 class generatedCode(unittest.TestCase):
@@ -29,9 +27,7 @@ class generatedCode(unittest.TestCase):
         generatedCode.oRoot = {}
 
     def test_rule_directive(self):
-        generatedCode.oGrammar.parse('identifier',
-                                     self.oRoot, 'rule_directive'),
+        generatedCode.oGrammar.parse("identifier", self.oRoot, "rule_directive"),
         self.assertEqual(
-            self.oRoot['rule_directive_test'],
-            True,
-            'failed in rule_directive')
+            self.oRoot["rule_directive_test"], True, "failed in rule_directive"
+        )

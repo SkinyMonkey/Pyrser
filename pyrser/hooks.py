@@ -5,8 +5,8 @@ import pprint
 
 
 class GenericHook(object):
-##### Hooks:
-    def true_hook(self, node_):
+    ##### Hooks:
+    def trueHook(self, node_):
         """
         #true :
         Returns True.
@@ -14,7 +14,7 @@ class GenericHook(object):
         """
         return True
 
-    def false_hook(self, node_):
+    def falseHook(self, node_):
         """
         #false :
         Returns False.
@@ -22,7 +22,7 @@ class GenericHook(object):
         """
         return False
 
-    def dump_hook(self, node_):
+    def dumpHook(self, node_):
         """
         #dump :
         Dump the content of the current node.
@@ -30,7 +30,7 @@ class GenericHook(object):
         pprint.pprint(node_)
         return True
 
-    def print_hook(self, node_, str_):
+    def printHook(self, node_, str_):
         """
         #print(str) :
         Print str.
@@ -38,7 +38,7 @@ class GenericHook(object):
         print(str_)
         return True
 
-    def id_hook(self, node_, name):
+    def idHook(self, node_, name):
         """
         #id :
         Print id of the local node_.
@@ -46,7 +46,7 @@ class GenericHook(object):
         print("[%s] - %s" % (name, id(node_)))
         return True
 
-    def exit_hook(self, node_):
+    def exitHook(self, node_):
         """
         #exit :
         Exit the processus.
@@ -70,7 +70,7 @@ class GenericHook(object):
         node.slide(node_, field)
         return True
 
-##### Wrappers:
+    ##### Wrappers:
     def _Wrapper(self, rule, node_):
         """
         @_ :
@@ -84,7 +84,7 @@ class GenericHook(object):
 
     def nextWrapper(self, rule, node_, field, clean=False):
         """
-        @node.next(field) :
+        @next(field) :
         The next node used as local for the following rules is created and
         added under the field key.
         If the rule wrapped fails the node will be delete.
@@ -181,6 +181,7 @@ class GenericHook(object):
         parsing.Parsing.oBaseParser.setTag(name)
         result = rule()
         if result is True:
-            print ("Consumed [%s] - %s" %
-                  (name, parsing.Parsing.oBaseParser.getTag(name)))
+            print(
+                "Consumed [%s] - %s" % (name, parsing.Parsing.oBaseParser.getTag(name))
+            )
         return result

@@ -19,6 +19,7 @@ class CodeGenerationHelper(object):
     """
     The code generation helper class.
     """
+
     def __init__(self, dConf):
         self.__nDepth = 1
         self.__lCount = [self.Count(0, 0)]
@@ -33,41 +34,41 @@ class CodeGenerationHelper(object):
             self.nLength = nLength
 
     def builtin(self, sName):
-        return self.__dConf['builtins'][sName]
+        return self.__dConf["builtins"][sName]
 
     def keyword(self, sName):
-        return self.__dConf['keyword'][sName]
+        return self.__dConf["keyword"][sName]
 
     def multiplier(self, sName):
-        return self.__dConf['multiplier'][sName]
+        return self.__dConf["multiplier"][sName]
 
     def not_(self, sName):
-        return self.__dConf['not'][sName]
+        return self.__dConf["not"][sName]
 
     def accessOperator(self):
-        return self.__dConf['accessOperator']
+        return self.__dConf["accessOperator"]
 
     def alt(self):
-        return self.__dConf['alt']
+        return self.__dConf["alt"]
 
     def baseParserAccess(self):
-        return self.__dConf['baseParserMethod']\
-            + self.__dConf['accessOperator']
+        return self.__dConf["baseParserMethod"] + self.__dConf["accessOperator"]
 
     def baseParser(self):
-        return self.__dConf['keyword']['object']\
-            + self.__dConf['accessOperator']\
-            + self.__dConf['baseParserMethod']
+        return (
+            self.__dConf["keyword"]["object"]
+            + self.__dConf["accessOperator"]
+            + self.__dConf["baseParserMethod"]
+        )
 
     def accessInstance(self):
-        return self.__dConf['keyword']['object']\
-            + self.__dConf['accessOperator']
+        return self.__dConf["keyword"]["object"] + self.__dConf["accessOperator"]
 
     def upPrimitives(self):
-        return self.__dConf['upPrimitives']
+        return self.__dConf["upPrimitives"]
 
     def capitalize(self, sString):
-        return '%s%s' % (sString[0].capitalize(), sString[1:])
+        return "%s%s" % (sString[0].capitalize(), sString[1:])
 
     def pushCount(self, nCount, nLength):
         self.__lCount.append(self.Count(nCount, nLength))
@@ -128,7 +129,7 @@ class CodeGenerationHelper(object):
         return oObject._TemplateReference__context[sName]
 
     def indent(self):
-        return ' ' * self.__dConf['indent'] * self.__nDepth
+        return " " * self.__dConf["indent"] * self.__nDepth
 
     def setGlobal(self, sName, oValue):
         self.__dGlobals[sName] = oValue
