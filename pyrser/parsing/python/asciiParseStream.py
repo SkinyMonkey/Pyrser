@@ -95,7 +95,7 @@ class Stream:
     def printStream(self, nIndex):
         while nIndex < self.__neofPos:
             if self.getCharAt(nIndex).isalnum() == False:
-                print("0x%x" % ord(self.getCharAt(nIndex)))
+                print(("0x%x" % ord(self.getCharAt(nIndex))))
             else:
-                print(self.getCharAt(nIndex))
+                print((self.getCharAt(nIndex)))
         nIndex += 1

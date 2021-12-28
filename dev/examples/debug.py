@@ -24,7 +24,7 @@ class Debug(Grammar, GenericHook):
 
 oGrammar = Debug()
 oRoot = {}
-print(oGrammar.parse("123", oRoot, "debug"))
+print((oGrammar.parse("123", oRoot, "debug")))
 clean_tree(oRoot, "parent")
 clean_tree(oRoot, "type")
 pprint(oRoot)

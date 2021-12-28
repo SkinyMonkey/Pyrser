@@ -1,7 +1,7 @@
 from pyrser.grammar import Grammar
 from pyrser.hooks import GenericHook
-from expression import CExpression
-from statement import CStatement
+from .expression import CExpression
+from .statement import CStatement
 from copy import copy
 
 
@@ -75,7 +75,7 @@ class CDeclaration(GenericHook, Grammar):
         if "ctype" not in oNode:
             oNode["ctype"] = copy(self.__dDefaultCType)
         else:
-            for iKey, iValue in self.__dDefaultCType.iteritems():
+            for iKey, iValue in list(self.__dDefaultCType.items()):
                 if iKey not in oNode["ctype"]:
                     oNode["ctype"][iKey] = iValue
         return True
@@ -119,15 +119,15 @@ class CDeclaration(GenericHook, Grammar):
     def isHook(self, oNode, sType, sSubKey=None):
         if sSubKey != None:
             oNode = oNode[sSubKey]
-        print(oNode["type"])
+        print((oNode["type"]))
         return oNode["type"] == sType
 
 
 if __name__ != "__main__":
     CDeclaration()
 else:
-    from tests.test import test
-    from tests.declaration import lTest
+    from .tests.test import test
+    from .tests.declaration import lTest
 
     bRes = test(lTest, CDeclaration(), "declaration.tpl", "translation_unit")
     if bRes == False:

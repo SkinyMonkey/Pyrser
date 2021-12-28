@@ -125,5 +125,5 @@ if __name__ == "__main__":
     # FIXME : segmentation fault
     # 0   asciiParse.so   0x0000000106076d08 AsciiParse::readIgnored() const + 20
     oRoot = {}
-    print(CStatement().parse("if (1)\n{\n}", oRoot, "statement"))
-    print(Grammar.nCount)
+    print((CStatement().parse("if (1)\n{\n}", oRoot, "statement")))
+    print((Grammar.nCount))

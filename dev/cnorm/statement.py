@@ -1,6 +1,6 @@
 from pyrser.grammar import Grammar
 from pyrser.hooks import GenericHook
-from expression import CExpression
+from .expression import CExpression
 
 
 class CStatement(GenericHook, Grammar):
@@ -19,8 +19,8 @@ print(__name__)
 if __name__ != "__main__":
     CStatement()
 else:
-    from tests.test import test
-    from tests.statement import lTest
+    from .tests.test import test
+    from .tests.statement import lTest
 
     test(lTest, CStatement(), "test_statement.tpl", "statement")
     print("All test passed.")

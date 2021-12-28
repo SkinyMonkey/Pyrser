@@ -7,7 +7,7 @@ def jinja_getattr(self, sName):
     try:
         return self._TemplateReference__context[sName]
     except:
-        print
+        print()
         pprint(self._TemplateReference__context["tree"])
         raise Exception("Undefined macro : %s" % sName)
 
@@ -26,8 +26,8 @@ def c_ast_to_c(oTree, sTemplateName, sTemplateFolder="templates"):
             "Something was possibly wrong with the tree. Check it and the traceback : %s."
             % exception
         )
-        print
+        print()
         pprint(oTree)
-        print(traceback.format_exc())
+        print((traceback.format_exc()))
         exit(1)
     return sGeneratedCode

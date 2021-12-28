@@ -97,12 +97,12 @@ class GrammarBase(type):
             # We add the compiled functions to the dict_ of the class
             # we are creating with the metaclass
             compiled_grammar = locals()["%sGrammar" % name]
-            for key, value in compiled_grammar.__dict__.iteritems():
+            for key, value in list(compiled_grammar.__dict__.items()):
                 if callable(value):
                     dict_[key] = value
 
         elif name != "Grammar":
-            print("Grammar could not be found in %s" % name)
+            print(("Grammar could not be found in %s" % name))
 
         # instantiate the new class
         cls = type.__new__(mcs, name, bases, dict_)
@@ -111,7 +111,7 @@ class GrammarBase(type):
         return cls
 
 
-class Grammar(object):
+class Grammar(object, metaclass=GrammarBase):
     """
     Base class for all grammars.
 
@@ -119,8 +119,6 @@ class Grammar(object):
     Taking the description of the grammar in parameter it will add
     all what is what is needed for A to parse it.
     """
-
-    __metaclass__ = GrammarBase
 
     @staticmethod
     def directive(fn):

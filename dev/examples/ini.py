@@ -36,7 +36,7 @@ def parse_ini(sSource):
 
 
 if __name__ == "__main__":
-    print(
+    print((
         parse_ini(
             """
   [title]
@@ -47,9 +47,9 @@ if __name__ == "__main__":
   [foo]
   bar = foobar;"""
         )
-    )
+    ))
 
-    print(
+    print((
         parse_ini(
             """
   [title]
@@ -58,4 +58,4 @@ if __name__ == "__main__":
   server = 127.0.0.1;
   """
         )
-    )
+    ))

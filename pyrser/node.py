@@ -39,7 +39,7 @@ def node(sType=None):
         @wraps(oTarget)
         def wrapped(*lArgs):
             # if type(lArgs[0]) != DictType:
-            if type(lArgs[0]) is not dict:
+            if not isinstance(lArgs[0], dict):
                 oNode = new_node(lArgs[1], sType)
                 bRes = oTarget(lArgs[0], oNode)
             else:
@@ -54,14 +54,14 @@ def node(sType=None):
 
 def clean_tree(oParent, sName):
     # if type(oParent) == DictType:
-    if type(oParent) is dict:
-        for iKey, iValue in oParent.iteritems():
+    if isinstance(oParent, dict):
+        for iKey, iValue in list(oParent.items()):
             if iKey != "parent" and iValue != oParent:
                 clean_tree(iValue, sName)
         if sName in oParent:
             del oParent[sName]
     # elif type(oParent) == ListType:
-    elif type(oParent) is list:
+    elif isinstance(oParent, list):
         for iValue in oParent:
             if iValue != oParent:
                 clean_tree(iValue, sName)

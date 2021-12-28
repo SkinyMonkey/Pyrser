@@ -43,7 +43,7 @@ class GenericHook(object):
         #id :
         Print id of the local node_.
         """
-        print("[%s] - %s" % (name, id(node_)))
+        print(("[%s] - %s" % (name, id(node_))))
         return True
 
     def exitHook(self, node_):
@@ -181,7 +181,7 @@ class GenericHook(object):
         parsing.Parsing.oBaseParser.setTag(name)
         result = rule()
         if result is True:
-            print(
+            print((
                 "Consumed [%s] - %s" % (name, parsing.Parsing.oBaseParser.getTag(name))
-            )
+            ))
         return result

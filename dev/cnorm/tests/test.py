@@ -7,7 +7,7 @@ def test(lTest, oGrammarParser, sTemplateName, sFirst):
     bExceptionInHook = False
     sTr = "-" * 80
     for iTest in lTest:
-        print("%s\n%s" % (sTr, iTest))
+        print(("%s\n%s" % (sTr, iTest)))
         oRoot = {}
         bRes = oGrammarParser.parse(iTest, oRoot, sFirst)
         if not bRes:
@@ -15,6 +15,6 @@ def test(lTest, oGrammarParser, sTemplateName, sFirst):
         sRes = c_ast_to_c(oRoot, sTemplateName)
         pprint(oRoot)
         if sRes != iTest:
-            print("!=\n%s" % sRes)
+            print(("!=\n%s" % sRes))
             raise Exception("CNorm2c test failed")
     return bExceptionInHook

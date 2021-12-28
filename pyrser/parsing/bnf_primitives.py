@@ -157,12 +157,10 @@ def n(oPredicat, nFrom, nTo=None):
 ##### functors:
 
 
-class ZeroOrOne:
+class ZeroOrOne(metaclass=SlotExpressionFunctor):
     """
     []? bnf primitive as a functor
     """
-
-    __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
         self.__lPredicats = lPredicats
@@ -171,12 +169,10 @@ class ZeroOrOne:
         return zeroOrOne(*self.__lPredicats)
 
 
-class ZeroOrN:
+class ZeroOrN(metaclass=SlotExpressionFunctor):
     """
     []* bnf primitive as a functor
     """
-
-    __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
         self.__lPredicats = lPredicats
@@ -185,12 +181,10 @@ class ZeroOrN:
         return zeroOrN(*self.__lPredicats)
 
 
-class OneOrN:
+class OneOrN(metaclass=SlotExpressionFunctor):
     """
     []+ bnf primitive as a functor
     """
-
-    __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
         self.__lPredicats = lPredicats
@@ -199,12 +193,10 @@ class OneOrN:
         return oneOrN(*self.__lPredicats)
 
 
-class Expression:
+class Expression(metaclass=SlotExpressionFunctor):
     """
     [] bnf primitive as a functor
     """
-
-    __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
         self.__lPredicats = lPredicats
@@ -213,12 +205,10 @@ class Expression:
         return expression(*self.__lPredicats)
 
 
-class Alt:
+class Alt(metaclass=SlotExpressionFunctor):
     """
     [] | [] bnf primitive as a functor
     """
-
-    __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
         self.__lPredicats = lPredicats
@@ -227,12 +217,10 @@ class Alt:
         return alt(*self.__lPredicats)
 
 
-class Until:
+class Until(metaclass=SlotExpressionFunctor):
     """
     ->[] bnf primitive as a functor
     """
-
-    __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
         self.__lPredicats = lPredicats
@@ -241,12 +229,10 @@ class Until:
         return until(*self.__lPredicats)
 
 
-class Negation:
+class Negation(metaclass=SlotExpressionFunctor):
     """
     ![] bnf primitive as a functor
     """
-
-    __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
         self.__lPredicats = lPredicats
@@ -255,12 +241,10 @@ class Negation:
         return negation(*self.__lPredicats)
 
 
-class Complement:
+class Complement(metaclass=SlotExpressionFunctor):
     """
     ~[] bnf primitive as a functor
     """
-
-    __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
         self.__lPredicats = lPredicats
@@ -269,12 +253,10 @@ class Complement:
         return complement(*self.__lPredicats)
 
 
-class LookAhead(object):
+class LookAhead(object, metaclass=SlotExpressionFunctor):
     """
     =[] bnf primitive as a functor
     """
-
-    __metaclass__ = SlotExpressionFunctor
 
     def __init__(self, *lPredicats):
         self.__lPredicats = lPredicats
