@@ -21,17 +21,12 @@ class Math(Father, Grammar):
     ;
     """
 
-    globals = globals()
-
 
 class MultiMath(Father, Grammar):
     """!grammar
     operand ::=  Father::operand ['+' Father::operand ]+
     ;
     """
-
-    globals = globals()
-
 
 class GeneratedCode(unittest.TestCase):
     @classmethod
