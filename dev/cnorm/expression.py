@@ -6,66 +6,66 @@ from pyrser.node import slide, next, next_is
 class CExpression(GenericHook, Grammar):
     __grammar__ = open("./dev/cnorm/grammar/expression.pw").read()
 
-    def __type(self, oNode, sSubExpr, sType="__expression__"):
+    def __type(self, o_node, s_sub_expr, s_type="__expression__"):
         """
         Type should attribute an automatic name: per grammar function.
         """
-        oNode["type"] = sType
-        oNode["sub_type"] = sSubExpr
-        return oNode
+        o_node["type"] = s_type
+        o_node["sub_type"] = s_sub_expr
+        return o_node
 
-    def to_post_exprHook(self, oNode, sType):
-        if "postfix" not in oNode:
-            oNode["postfix"] = []
-        oIndex = {"expr": {}}
-        self.__type(oIndex, sType)
-        oNode["postfix"].append(oIndex)
-        next_is(oNode, oNode["postfix"][-1]["expr"])
+    def to_post_expr_hook(self, o_node, s_type):
+        if "postfix" not in o_node:
+            o_node["postfix"] = []
+        o_index = {"expr": {}}
+        self.__type(o_index, s_type)
+        o_node["postfix"].append(o_index)
+        next_is(o_node, o_node["postfix"][-1]["expr"])
         return True
 
-    def type_nextHook(self, oNode, sSubType, sNext):
-        next(oNode, sNext)
-        self.__type(oNode, sSubType)
+    def type_next_hook(self, o_node, s_sub_type, s_next):
+        next(o_node, s_next)
+        self.__type(o_node, s_sub_type)
         return True
 
-    def Nnary_opHook(self, oNode, sSubType, sSide, sNext):
-        slide(oNode, sSide)
-        self.__type(oNode, sSubType)
-        next(oNode, sNext)
+    def nnary_op_hook(self, o_node, s_sub_type, s_side, s_next):
+        slide(o_node, s_side)
+        self.__type(o_node, s_sub_type)
+        next(o_node, s_next)
         return True
 
-    def primaryHook(self, oNode, sOperator):
-        self.__type(oNode, "terminal")
-        oNode["operator"] = sOperator
+    def primary_hook(self, o_node, s_operator):
+        self.__type(o_node, "terminal")
+        o_node["operator"] = s_operator
         return True
 
-    def to_post_opHook(self, oNode, sType):
-        self.to_post_exprHook(oNode, sType)
-        oNode["postfix"][-1]["expr"]["op"] = oNode["op"]
-        del oNode["op"]
+    def to_post_op_hook(self, o_node, s_type):
+        self.to_post_expr_hook(o_node, s_type)
+        o_node["postfix"][-1]["expr"]["op"] = o_node["op"]
+        del o_node["op"]
         return True
 
-    def sizeofHook(self, oNode):
-        if "primary_id" in oNode and oNode["primary_id"] == "sizeof":
-            oExpr = oNode["postfix"][0]["expr"]
-            oNode.clear()
-            self.__type(oNode, "sizeof")
-            oNode["expr"] = oExpr
+    def sizeof_hook(self, o_node):
+        if "primary_id" in o_node and o_node["primary_id"] == "sizeof":
+            o_expr = o_node["postfix"][0]["expr"]
+            o_node.clear()
+            self.__type(o_node, "sizeof")
+            o_node["expr"] = o_expr
         return True
 
-    def captured_somethingHook(self, oNode):
+    def captured_something_hook(self, o_node):
         # FIXME : workaround degueu car dans certains cas
         # 	    la grammaire d'expression capture .. du vide
-        bRes = len(oNode["captured"]) > 0
-        del oNode["captured"]
-        return bRes
+        b_res = len(o_node["captured"]) > 0
+        del o_node["captured"]
+        return b_res
 
 
 if __name__ != "__main__":
     CExpression()
 else:
     from .tests.test import test
-    from .tests.expression import lTest
+    from .tests.expression import l_test
 
-    test(lTest, CExpression(), "test_expression.tpl", "expression")
+    test(l_test, CExpression(), "test_expression.tpl", "expression")
     print("All test passed.")

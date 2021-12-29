@@ -6,9 +6,9 @@ def rule_stack_trace(oInstance):
     """
     Trace the rules, hook and wrapper calls.
     """
-    nDepth = 1
+    ndepth = 1
     for iCall in extract_stack():
-        for iManglingEnd in ["Rule", "Wrapper", "Hook"]:
+        for iManglingEnd in ["Rule", "wrapper", "Hook"]:
             if iCall[2].endswith(iManglingEnd):
                 sFile = iCall[0]
                 if sFile == "<string>":
@@ -16,7 +16,7 @@ def rule_stack_trace(oInstance):
                 print((
                     "%s+|In %s line %s: %s::%s (%s)"
                     % (
-                        nDepth * "-",
+                        ndepth * "-",
                         sFile,
                         iCall[1],
                         oInstance.__class__.__name__,
@@ -25,7 +25,7 @@ def rule_stack_trace(oInstance):
                     )
                 ))
                 if iManglingEnd == "Rule":
-                    nDepth += 1
+                    ndepth += 1
 
 
 def set_stack_trace(oInstance):
@@ -62,30 +62,30 @@ def result_stack_trace(oTrace):
 class Trace(object):
     def __init__(self, oGrammar):
         self.lCalled = []
-        self.nDepth = 1
+        self.ndepth = 1
         self.sGrammarName = oGrammar.__class__.__name__
 
     def __call__(self, oFrame, sEvent, oArg):
         sFuncName = oFrame.f_code.co_name
-        for iManglingEnd in ["Rule", "Wrapper", "Hook"]:
+        for iManglingEnd in ["Rule", "wrapper", "Hook"]:
             if sFuncName.endswith(iManglingEnd):
                 if sEvent == "call":
                     self.lCalled.append(
                         {
                             "name": sFuncName,
-                            "depth": self.nDepth,
+                            "depth": self.ndepth,
                             "grammar": self.sGrammarName,
                             "line": oFrame.f_lineno,
                             "file": oFrame.f_code.co_filename,
                             "type": iManglingEnd,
                         }
                     )
-                    self.nDepth += 1
+                    self.ndepth += 1
                 elif sEvent == "return":
                     nCount = len(self.lCalled) - 1
                     while nCount >= 0:
                         if self.lCalled[nCount]["name"] == sFuncName:
                             self.lCalled[nCount]["return"] = oArg
                         nCount -= 1
-                    self.nDepth -= 1
+                    self.ndepth -= 1
                 return self.__call__

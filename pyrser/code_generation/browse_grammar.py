@@ -18,42 +18,42 @@ from pyrser.code_generation.helper import CodeGenerationHelper
 
 
 class BrowseGrammar(object):
-    def __init__(self, dLangConf):
-        self.sRes = ""
-        self.dLangConf = dLangConf
-        self.oHelper = CodeGenerationHelper(dLangConf)
+    def __init__(self, d_lang_conf):
+        self.s_res = ""
+        self.d_lang_conf = d_lang_conf
+        self.o_helper = CodeGenerationHelper(d_lang_conf)
 
-    def browse_multiplier(self, oMultiplier):
-        if oMultiplier["multiplier"] == "expression":
-            browse_clauses(oMultiplier["terminal"]["clauses"])
+    def browse_multiplier(self, o_multiplier):
+        if o_multiplier["multiplier"] == "expression":
+            browse_clauses(o_multiplier["terminal"]["clauses"])
         else:
-            browse_terminal(oMultiplier["terminal"])
+            browse_terminal(o_multiplier["terminal"])
 
-    def browse_alternative(self, lAlternative):
-        for iAlternative in lAlternative:
-            self.lang_terminal(iAlternative)
+    def browse_alternative(self, l_alternative):
+        for i_alternative in l_alternative:
+            self.lang_terminal(i_alternative)
 
-    def browse_clauses(self, lClauses):
-        nCount = 0
-        for iAlternative in lClauses["alternatives"]:
-            self.lang_alternative(nCount, iAlternative)
-            nCount += 1
+    def browse_clauses(self, l_clauses):
+        n_count = 0
+        for i_alternative in l_clauses["alternatives"]:
+            self.lang_alternative(n_count, i_alternative)
+            n_count += 1
 
-    def browse_rule(self, oRule, oCallback):
-        oCallback(oRule["clauses"])
+    def browse_rule(self, o_rule, o_callback):
+        o_callback(o_rule["clauses"])
 
-    def browse_rule_directives(self, lRule_directives, oCallback):
-        for rule_directive in lRule_directives:
-            oCallback(rule_directive)
+    def browse_rule_directives(self, l_rule_directives, o_callback):
+        for rule_directive in l_rule_directives:
+            o_callback(rule_directive)
 
-    def browse_hooks(self, oGrammar, oCallback):
-        for iHook in oGrammar["hooks"]:
-            oCallback(oGrammar["name"], iHook)
+    def browse_hooks(self, o_grammar, o_callback):
+        for i_hook in o_grammar["hooks"]:
+            o_callback(o_grammar["name"], i_hook)
 
-    def browse_wrappers(self, oGrammar, oCallback):
-        for iWrapper in oGrammar["wrappers"]:
-            oCallback(oGrammar["name"], iWrapper)
+    def browse_wrappers(self, o_grammar, o_callback):
+        for i_wrapper in o_grammar["wrappers"]:
+            o_callback(o_grammar["name"], i_wrapper)
 
-    def browse_rules(self, sGrammarName, lRules, oCallback):
-        for iRule in lRules:
-            oCallback(sGrammarName, iRule)
+    def browse_rules(self, s_grammar_name, l_rules, o_callback):
+        for i_rule in l_rules:
+            o_callback(s_grammar_name, i_rule)

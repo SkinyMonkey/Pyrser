@@ -17,18 +17,18 @@
 from pyrser.parsing import Parsing
 
 
-def capture(oPredicat, sName, dDict, bConsumeWs=True):
+def capture(o_predicat, s_name, d_dict, b_consume_ws=True):
     """
     Capture the bytes consumed by a predicat.
     """
-    if bConsumeWs:
-        Parsing.oBaseParser.readIgnored()
-    Parsing.oBaseParser.setTag(sName)
-    bRes = oPredicat()
-    if bRes:
-        if (sName in dDict) == False or not isinstance(dDict[sName], type({})):
-            dDict[sName] = Parsing.oBaseParser.getTag(sName)
-    return bRes
+    if b_consume_ws:
+        Parsing.o_base_parser.read_ignored()
+    Parsing.o_base_parser.set_tag(s_name)
+    b_res = o_predicat()
+    if b_res:
+        if (s_name in d_dict) == False or not isinstance(d_dict[s_name], type({})):
+            d_dict[s_name] = Parsing.o_base_parser.get_tag(s_name)
+    return b_res
 
 
 class Capture(object):
@@ -36,11 +36,11 @@ class Capture(object):
     Capture function functor.
     """
 
-    def __init__(self, oPredicat, sName, dDict, bConsumeWs=True):
-        self.__oPredicat = oPredicat
-        self.__sName = sName
-        self.__dDict = dDict
-        self.__bConsumeWs = bConsumeWs
+    def __init__(self, o_predicat, s_name, d_dict, b_consume_ws=True):
+        self.__o_predicat = o_predicat
+        self.__s_name = s_name
+        self.__d_dict = d_dict
+        self.__b_consume_ws = b_consume_ws
 
     def __call__(self):
-        return capture(self.__oPredicat, self.__sName, self.__dDict, self.__bConsumeWs)
+        return capture(self.__o_predicat, self.__s_name, self.__d_dict, self.__b_consume_ws)

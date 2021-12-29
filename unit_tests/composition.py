@@ -18,15 +18,15 @@ class Composition(Grammar):
     globals = globals()
 
 
-class generatedCode(unittest.TestCase):
+class GeneratedCode(unittest.TestCase):
     @classmethod
-    def setUpClass(cGeneratedCodeClass):
-        cGeneratedCodeClass.oRoot = {}
-        cGeneratedCodeClass.oGrammar = Composition()
+    def setUpClass(c_generated_code_class):
+        c_generated_code_class.o_root = {}
+        c_generated_code_class.o_grammar = Composition()
 
     def test_composition(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("12 + 12", self.oRoot, "composition"),
+            GeneratedCode.o_grammar.parse("12 + 12", self.o_root, "composition"),
             True,
             "failed in composition",
         )

@@ -49,103 +49,103 @@ class NoDepthGeneration(Grammar):
      ;
     """
 
-    def testHook(self, oNode):
+    def test_hook(self, o_node):
         return True
 
-    def testWrapper(self, oRule, oNode):
-        bRes = oRule()
-        oNode["test"] = oNode["capture"]
-        return bRes
+    def test_wrapper(self, o_rule, o_node):
+        b_res = o_rule()
+        o_node["test"] = o_node["capture"]
+        return b_res
 
 
-class generatedCode(unittest.TestCase):
+class GeneratedCode(unittest.TestCase):
     @classmethod
-    def setUpClass(cGeneratedCodeClass):
-        cGeneratedCodeClass.oRoot = {}
-        cGeneratedCodeClass.oGrammar = NoDepthGeneration()
+    def setUpClass(c_generated_code_class):
+        c_generated_code_class.o_root = {}
+        c_generated_code_class.o_grammar = NoDepthGeneration()
 
     def test_directive(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("identifier", self.oRoot, "directive"),
+            GeneratedCode.o_grammar.parse("identifier", self.o_root, "directive"),
             True,
             "failed in directive",
         )
 
     def test_capture(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("identifier", self.oRoot, "capture"),
+            GeneratedCode.o_grammar.parse("identifier", self.o_root, "capture"),
             True,
             "failed in capture",
         )
 
     def test_hook(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("", self.oRoot, "hook"), True, "failed in hook"
+            GeneratedCode.o_grammar.parse("", self.o_root, "hook"), True, "failed in hook"
         )
 
     def test_wrapper(self):
-        generatedCode.oGrammar.parse("id", self.oRoot, "wrapper"),
-        self.assertEqual("test" in self.oRoot, True, "failed in wrapper")
+        GeneratedCode.o_grammar.parse("id", self.o_root, "wrapper"),
+        self.assertEqual("test" in self.o_root, True, "failed in wrapper")
 
-    def test_nonTerminal(self):
+    def test_non_terminal(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("identifier", self.oRoot, "nonTerminal"),
+            GeneratedCode.o_grammar.parse("identifier", self.o_root, "nonTerminal"),
             True,
             "failed in nonTerminal",
         )
 
     def test_range(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("i", self.oRoot, "range"),
+            GeneratedCode.o_grammar.parse("i", self.o_root, "range"),
             True,
             "failed in range",
         )
 
     def test_until(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("321", self.oRoot, "until"),
+            GeneratedCode.o_grammar.parse("321", self.o_root, "until"),
             True,
             "failed in until",
         )
 
     def test_multiplier(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("1", self.oRoot, "multiplier"),
+            GeneratedCode.o_grammar.parse("1", self.o_root, "multiplier"),
             True,
             "failed in multiplier",
         )
 
     def test_not(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("tata", self.oRoot, "not"),
+            GeneratedCode.o_grammar.parse("tata", self.o_root, "not"),
             True,
             "failed in not",
         )
 
     def test_complement(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("01", self.oRoot, "complement"),
+            GeneratedCode.o_grammar.parse("01", self.o_root, "complement"),
             True,
             "failed in complement",
         )
 
     def test_alt(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("123", self.oRoot, "alt"),
+            GeneratedCode.o_grammar.parse("123", self.o_root, "alt"),
             True,
             "failed in alt",
         )
 
     def test_terminal_range1(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("0", self.oRoot, "terminal_range1"),
+            GeneratedCode.o_grammar.parse("0", self.o_root, "terminal_range1"),
             True,
             "failed in terminal range #1",
         )
 
     def test_terminal_range2(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("00", self.oRoot, "terminal_range2"),
+            GeneratedCode.o_grammar.parse("00", self.o_root, "terminal_range2"),
             True,
             "failed in terminal range #2",
         )

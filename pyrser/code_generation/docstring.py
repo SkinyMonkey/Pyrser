@@ -18,87 +18,87 @@ from pyrser.code_generation.browse_grammar import *
 
 
 class Docstring(BrowseGrammar):
-    def __init__(self, oRenderer):
-        super(Docstring, self).__init__(oRenderer.dLangConf)
-        self.sRes = ""
+    def __init__(self, o_renderer):
+        super(Docstring, self).__init__(o_renderer.d_lang_conf)
+        self.s_res = ""
 
     def lang_multiplier(self, multiplier):
         if multiplier["multiplier"] == "[]":
-            self.sRes += " ["
+            self.s_res += " ["
             self.browse_clauses(multiplier["terminal"]["clauses"])
-            self.sRes += " ]"
+            self.s_res += " ]"
         else:
             self.lang_terminal(multiplier["terminal"])
-            self.sRes += multiplier["multiplier"]
+            self.s_res += multiplier["multiplier"]
 
     def lang_directive(self, terminal):
-        self.sRes += " #%s" % terminal["name"]
+        self.s_res += " #%s" % terminal["name"]
 
     def lang_capture(self, terminal):
         self.lang_terminal(terminal["terminal"])
-        self.sRes += " :%s" % terminal["name"]
+        self.s_res += " :%s" % terminal["name"]
 
-    def lang_nonTerminal(self, terminal):
-        self.sRes += " %s" % terminal["name"]
+    def lang_non_terminal(self, terminal):
+        self.s_res += " %s" % terminal["name"]
 
     def lang_hook(self, terminal):
-        self.sRes += " %%%s" % terminal["name"]
+        self.s_res += " %%%s" % terminal["name"]
 
     def lang_wrapper(self, terminal):
-        self.sRes += " @%s" % terminal["name"]
+        self.s_res += " @%s" % terminal["name"]
         self.lang_terminal(terminal["terminal"])
 
     def lang_until(self, terminal):
-        self.sRes += " ->"
+        self.s_res += " ->"
         self.lang_terminal(terminal["terminal"])
 
-    def lang_lookAhead(self, terminal):
-        self.sRes += " ="
+    def lang_look_ahead(self, terminal):
+        self.s_res += " ="
         self.lang_terminal(terminal["terminal"])
 
     def lang_cchar(self, terminal):
-        self.sRes += " %s" % terminal["string"]
+        self.s_res += " %s" % terminal["string"]
 
     def lang_cstring(self, terminal):
-        self.sRes += " %s" % terminal["string"]
+        self.s_res += " %s" % terminal["string"]
 
     def lang_not(self, terminal):
-        self.sRes += " %s" % terminal["not"]
+        self.s_res += " %s" % terminal["not"]
         self.lang_terminal(terminal["terminal"])
 
     def lang_aggregation(self, terminal):
-        self.sRes += " %s::%s" % (terminal["name"], terminal["nonTerminal"]["name"])
+        self.s_res += " %s::%s" % (terminal["name"], terminal["non_terminal"]["name"])
 
     def lang_alternative_terminal(self, terminal):
         self.browse_clauses(terminal)
 
     def lang_range(self, terminal):
-        self.sRes += " %s .. %s" % (terminal["from"], terminal["to"])
+        self.s_res += " %s .. %s" % (terminal["from"], terminal["to"])
 
     def lang_terminal_range(self, terminal):
         self.lang_terminal(terminal["terminal"])
-        self.sRes += "{%s" % (terminal["from"])
+        self.s_res += "{%s" % (terminal["from"])
         if "to" in terminal:
-            self.sRes += ", %s}" % (terminal["to"])
+            self.s_res += ", %s}" % (terminal["to"])
         else:
-            self.sRes += "}"
+            self.s_res += "}"
 
     def lang_terminal(self, terminal):
         getattr(self, "lang_%s" % terminal["type"])(terminal)
         pass
 
-    def lang_alternative(self, nCount, lAlternative):
-        if nCount > 0:
-            self.sRes += " |"
-        self.browse_alternative(lAlternative)
+    def lang_alternative(self, n_count, l_alternative):
+        if n_count > 0:
+            self.s_res += " |"
+        self.browse_alternative(l_alternative)
 
     def lang_clauses(self, clauses):
         self.browse_clauses(clauses)
 
     def lang_rule_directive(self, rule_directive):
-        self.sRes += " @%s" % rule_directive["name"]
+        self.s_res += " @%s" % rule_directive["name"]
         if "params" in rule_directive:
-            self.sRes += "(%s" % rule_directive["params"]
+            self.s_res += "(%s" % rule_directive["params"]
 
     def lang_template_rule_name(self, rule):
         """
@@ -110,12 +110,12 @@ class Docstring(BrowseGrammar):
         """
 
     def lang_rule(self, grammar_name, rule):
-        self.sRes = "%s::%s" % (grammar_name, rule["prototype"]["name"])
+        self.s_res = "%s::%s" % (grammar_name, rule["prototype"]["name"])
         #    	  lang_template_rule_name(rule)
         # FIXME
         # browse_rule_directives(rule['prototype']['rule_directive'],
         # lang_rule_directive)
-        self.sRes += " ::="
+        self.s_res += " ::="
         self.browse_rule(rule, self.lang_clauses)
-        self.sRes += "\n          ;\n"
-        return self.sRes
+        self.s_res += "\n          ;\n"
+        return self.s_res

@@ -1,33 +1,33 @@
 python = {
     "builtins": {
-        "identifier": "readIdentifier",
-        "num": "readInteger",
-        "string": "readCString",
-        "cchar": "readCChar",
-        "char": "readAChar",
-        "space": "readWs",
-        "end": "readUntilEOF",
-        "empty": "readEOF",
+        "identifier": "read_identifier",
+        "num": "read_integer",
+        "string": "read_c_string",
+        "cchar": "read_c_char",
+        "char": "read_a_char",
+        "space": "read_ws",
+        "end": "read_untilEOF",
+        "empty": "read_eof",
         "super": "super",
         "false": "false",
-        "readThisChar": "readChar",
-        "readThisText": "readText",
-        "range": "readRange",
-        "notIgnore": "notIgnore",
-        "resetIgnore": "resetIgnore",
+        "readThisChar": "read_char",
+        "readThisText": "read_text",
+        "range": "read_range",
+        "not_ignore": "not_ignore",
+        "resetIgnore": "reset_ignore",
     },
     "not": {"!": "negation", "~": "complement"},
     "multiplier": {
-        "?": "zeroOrOne",
-        "+": "oneOrN",
-        "*": "zeroOrN",
+        "?": "zero_or_one",
+        "+": "one_or_n",
+        "*": "zero_or_n",
         "[]": "expression",
         "{}": "n",
     },
     "keyword": {"and": "and", "object": "self"},
-    "accessOperator": ".",
+    "access_operator": ".",
     "alt": "alt",
-    "baseParserMethod": "Parsing.oBaseParser",
+    "baseParserMethod": "Parsing.o_base_parser",
     "indent": 15,
     "file_extension": ".py",
 }
@@ -35,19 +35,19 @@ python = {
 from imp import load_source
 
 
-def pythonPostGeneration(sModuleName, sFile, sToFile, sGrammar, oInstance):
+def python_post_generation(s_module_name, s_file, s_to_file, s_grammar, o_instance):
     # 	    try:
-    oModule = load_source(sModuleName, sToFile)
+    o_module = load_source(s_module_name, s_to_file)
     # 	    except:
     # 	      self.error(\
     # 		'Generated source is wrong, please report on redmine.lse.epita.fr')
     # 	      exit(0)
 
-    if sGrammar != None:
+    if s_grammar != None:
         try:
-            oClass = getattr(oModule, sGrammar)
-            return oClass
+            o_class = getattr(o_module, s_grammar)
+            return o_class
         except:
-            oInstance.error('No grammar called "%s" in %s' % (sGrammar, sFile))
+            o_instance.error('No grammar called "%s" in %s' % (s_grammar, s_file))
             exit(0)
-    return oModule
+    return o_module

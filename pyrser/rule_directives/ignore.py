@@ -16,30 +16,30 @@
 
 from parsing import Parsing
 
-dWsList = {"base": " \t\r\n"}
+d_ws_list = {"base": " \t\r\n"}
 
 
-def addWsList(sName, sWsList):
-    dWsList[sName] = sWsList
+def add_ws_list(s_name, s_ws_list):
+    d_ws_list[s_name] = s_ws_list
 
 
-class ignore(object):
+class Ignore(object):
     """
     A decorator that specify the wsList
     """
 
-    def __init__(self, sWsList):
-        if sWsList.upper() in dWsList:
-            self.__sWsList = dWsList[sWsList.upper()]
+    def __init__(self, s_ws_list):
+        if s_ws_list.upper() in d_ws_list:
+            self.__s_ws_list = d_ws_list[s_ws_list.upper()]
         else:
-            self.__sWsList = sWsList
+            self.__s_ws_list = s_ws_list
 
-    def __call__(self, oRule):
-        def wrapper(*lArgs):
-            sOldWsList = Parsing.oBaseParser.getWsList()
-            Parsing.oBaseParser.setWsList(self.__sWsList)
-            bRes = oRule(*lArgs)
-            Parsing.oBaseParser.setWsList(sOldWsList)
-            return bRes
+    def __call__(self, o_rule):
+        def wrapper(*l_args):
+            s_old_ws_list = Parsing.o_base_parser.getWsList()
+            Parsing.o_base_parser.setWsList(self.__s_ws_list)
+            b_res = o_rule(*l_args)
+            Parsing.o_base_parser.setWsList(s_old_ws_list)
+            return b_res
 
         return wrapper

@@ -18,14 +18,14 @@ from pyrser.parsing import Parsing
 from functools import wraps
 
 
-def parsingContext(oTarget):
-    @wraps(oTarget)
-    def wrapper(*lArgs):
-        Parsing.oBaseParser.saveContext()
-        bRes = oTarget(*lArgs)
-        if bRes:
-            return Parsing.oBaseParser.validContext()
-        Parsing.oBaseParser.restoreContext()
+def parsing_context(o_target):
+    @wraps(o_target)
+    def wrapper(*l_args):
+        Parsing.o_base_parser.save_context()
+        b_res = o_target(*l_args)
+        if b_res:
+            return Parsing.o_base_parser.valid_context()
+        Parsing.o_base_parser.restore_context()
         return False
 
     return wrapper

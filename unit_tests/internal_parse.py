@@ -1,128 +1,127 @@
 import unittest
 from pyrser.parsing.python.AsciiParseWrapper import AsciiParseWrapper
 
-
 class InternalParse_Test(unittest.TestCase):
     @classmethod
-    def setUpClass(cInternalParseClass):
-        cInternalParseClass.oParse = AsciiParseWrapper()
-        cInternalParseClass.oParse.popStream()
+    def setUpClass(c_internal_parse_class):
+        c_internal_parse_class.o_parse = AsciiParseWrapper()
+        c_internal_parse_class.o_parse.pop_stream()
 
-    def test_readIdentifier(self):
+    def test_read_identifier(self):
         """
         Basic test for identifier parsing
         """
-        oParse = InternalParse_Test.oParse
-        oParse.parsedStream("ceci est un test", sName="root")
+        o_parse = InternalParse_Test.o_parse
+        o_parse.parsed_stream("ceci est un test", s_name="root")
         self.assertTrue(
-            oParse.setTag("sujet") and oParse.readIdentifier(),
-            "failed in readIdentifier for sujet",
+            o_parse.set_tag("sujet") and o_parse.read_identifier(),
+            "failed in read_identifier for sujet",
         )
-        sujet = oParse.getTag("sujet")
+        sujet = o_parse.get_tag("sujet")
         self.assertEqual(sujet, "ceci", "failed in capture sujet")
         self.assertTrue(
-            oParse.setTag("verbe") and oParse.readIdentifier(),
-            "failed in readIdentifier for verbe",
+            o_parse.set_tag("verbe") and o_parse.read_identifier(),
+            "failed in read_identifier for verbe",
         )
-        verbe = oParse.getTag("verbe")
+        verbe = o_parse.get_tag("verbe")
         self.assertEqual(verbe, "est", "failed in capture verbe")
         self.assertTrue(
-            oParse.setTag("other") and oParse.readUntilEOF(),
-            "failed in readIdentifier for other",
+            o_parse.set_tag("other") and o_parse.read_until_EOF(),
+            "failed in read_identifier for other",
         )
-        reste = oParse.getTag("other")
+        reste = o_parse.get_tag("other")
         self.assertEqual(reste, "un test", "failed in capture other")
 
-    def test_readInteger(self):
+    def test_read_integer(self):
         """
         Basic test for integer parsing
         """
-        oParse = InternalParse_Test.oParse
-        oParse.parsedStream("12 333 44444444444444444444444444", sName="root")
+        o_parse = InternalParse_Test.o_parse
+        o_parse.parsed_stream("12 333 44444444444444444444444444", s_name="root")
         self.assertTrue(
-            oParse.setTag("n1") and oParse.readInteger(), "failed in readInteger for n1"
+            o_parse.set_tag("n1") and o_parse.read_integer(), "failed in read_integer for n1"
         )
-        n1 = oParse.getTag("n1")
+        n1 = o_parse.get_tag("n1")
         self.assertEqual(n1, "12", "failed in capture n1")
         self.assertTrue(
-            oParse.setTag("n2") and oParse.readInteger(), "failed in readInteger for n2"
+            o_parse.set_tag("n2") and o_parse.read_integer(), "failed in read_integer for n2"
         )
-        n2 = oParse.getTag("n2")
+        n2 = o_parse.get_tag("n2")
         self.assertEqual(n2, "333", "failed in capture n2")
         self.assertTrue(
-            oParse.setTag("n3") and oParse.readInteger(), "failed in readInteger for n3"
+            o_parse.set_tag("n3") and o_parse.read_integer(), "failed in read_integer for n3"
         )
-        n3 = oParse.getTag("n3")
+        n3 = o_parse.get_tag("n3")
         self.assertEqual(n3, "44444444444444444444444444", "failed in capture n3")
 
     def test_linecol(self):
         """
         Basic test for line/col calculation
         """
-        oParse = InternalParse_Test.oParse
-        oParse.parsedStream("X\nXX\nXXX\n")
-        line = oParse.getLineNbr()
-        col = oParse.getColumnNbr()
+        o_parse = InternalParse_Test.o_parse
+        o_parse.parsed_stream("X\nXX\nXXX\n")
+        line = o_parse.get_line_nbr()
+        col = o_parse.get_column_nbr()
         self.assertTrue(line == 1 and col == 1, "failed line/col at beginning")
-        oParse.incPos()
-        oParse.incPos()
-        line = oParse.getLineNbr()
-        col = oParse.getColumnNbr()
+        o_parse.inc_pos()
+        o_parse.inc_pos()
+        line = o_parse.get_line_nbr()
+        col = o_parse.get_column_nbr()
         self.assertTrue(line == 2 and col == 1, "failed line/col at second")
-        oParse.incPos()
-        oParse.incPos()
-        oParse.incPos()
-        line = oParse.getLineNbr()
-        col = oParse.getColumnNbr()
+        o_parse.inc_pos()
+        o_parse.inc_pos()
+        o_parse.inc_pos()
+        line = o_parse.get_line_nbr()
+        col = o_parse.get_column_nbr()
         self.assertTrue(line == 3 and col == 1, "failed line/col at third")
-        oParse.incPos()
-        oParse.incPos()
-        col = oParse.getColumnNbr()
+        o_parse.inc_pos()
+        o_parse.inc_pos()
+        col = o_parse.get_column_nbr()
         self.assertTrue(line == 3 and col == 3, "failed line/col at col")
-        oParse.incPos()
-        oParse.incPos()
-        line = oParse.getLineNbr()
-        col = oParse.getColumnNbr()
+        o_parse.inc_pos()
+        o_parse.inc_pos()
+        line = o_parse.get_line_nbr()
+        col = o_parse.get_column_nbr()
         self.assertTrue(line == 4 and col == 1, "failed line/col at forth")
 
-    def test_readCChar(self):
+    def test_read_c_char(self):
         """
-        Basic test for readCChar
+        Basic test for read_c_char
         """
-        oParse = InternalParse_Test.oParse
-        oParse.parsedStream("'c' '\\t'", sName="root")
+        o_parse = InternalParse_Test.o_parse
+        o_parse.parsed_stream("'c' '\\t'", s_name="root")
         self.assertTrue(
-            oParse.setTag("c1") and oParse.readCChar(), "failed in readCChar for c1"
+            o_parse.set_tag("c1") and o_parse.read_c_char(), "failed in read_c_char for c1"
         )
-        c1 = oParse.getTag("c1")
+        c1 = o_parse.get_tag("c1")
         self.assertEqual(c1, "'c'", "failed in capture c1")
         self.assertTrue(
-            oParse.setTag("c2") and oParse.readCChar(), "failed in readCChar for c2"
+            o_parse.set_tag("c2") and o_parse.read_c_char(), "failed in read_c_char for c2"
         )
-        c2 = oParse.getTag("c2")
+        c2 = o_parse.get_tag("c2")
         self.assertEqual(c2, "'\\t'", "failed in capture c2")
 
-    def test_readCString(self):
+    def test_read_c_string(self):
         """
-        Basic test for readCString
+        Basic test for read_c_string
         """
-        oParse = InternalParse_Test.oParse
-        oParse.parsedStream(
+        o_parse = InternalParse_Test.o_parse
+        o_parse.parsed_stream(
             '"premiere chaine" "deuxieme chaine\\n" "troisieme chainee \\"."',
-            sName="root",
+            s_name="root",
         )
         self.assertTrue(
-            oParse.setTag("s1") and oParse.readCString(), "failed in readCString for s1"
+            o_parse.set_tag("s1") and o_parse.read_c_string(), "failed in read_c_string for s1"
         )
-        s1 = oParse.getTag("s1")
+        s1 = o_parse.get_tag("s1")
         self.assertEqual(s1, '"premiere chaine"', "failed in capture s1")
         self.assertTrue(
-            oParse.setTag("s2") and oParse.readCString(), "failed in readCString for s2"
+            o_parse.set_tag("s2") and o_parse.read_c_string(), "failed in read_c_string for s2"
         )
-        s2 = oParse.getTag("s2")
+        s2 = o_parse.get_tag("s2")
         self.assertEqual(s2, '"deuxieme chaine\\n"', "failed in capture s2")
         self.assertTrue(
-            oParse.setTag("s3") and oParse.readCString(), "failed in readCString for s3"
+            o_parse.set_tag("s3") and o_parse.read_c_string(), "failed in read_c_string for s3"
         )
-        s3 = oParse.getTag("s3")
+        s3 = o_parse.get_tag("s3")
         self.assertEqual(s3, '"troisieme chainee \\"."', "failed in capture s3")

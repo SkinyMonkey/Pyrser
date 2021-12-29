@@ -20,8 +20,9 @@ from pyrser.code_generation import python
 
 # TODO(bps): factor those imports for generated code
 from pyrser.parsing.capture import capture, Capture
-from pyrser.parsing.parsing_context import parsingContext, Parsing
+from pyrser.parsing.parsing_context import parsing_context, Parsing
 from pyrser.parsing.directive_functor import (
+    functor,
     NonTerminal,
     ReadChar,
     Hook,
@@ -39,16 +40,16 @@ from pyrser.parsing.bnf_primitives import (
     N,
     negation,
     Negation,
-    oneOrN,
+    one_or_n,
     OneOrN,
     until,
     Until,
-    zeroOrN,
+    zero_or_n,
     ZeroOrN,
-    zeroOrOne,
+    zero_or_one,
     ZeroOrOne,
 )
-from pyrser.lang.python import python as dLangConf
+from pyrser.lang.python import python as d_lang_conf
 
 grammar_marker = "!grammar"
 
@@ -79,9 +80,9 @@ class GrammarBase(type):
         if grammar is not None:
             # We parse the grammar, generate code from it and compile it to bytecode
             ast = dsl_parser.parse(grammar, {}, name)
-            generated_code = python.Python(dLangConf).translation(name, ast["rules"])
+            generated_code = python.Python(d_lang_conf).translation(name, ast["rules"])
             # FIXME : remove, DEBUG
-            #            open("/tmp/res", 'w+').write(generated_code)
+            open("/tmp/res", 'w+').write(generated_code)
             byte_code = compile(generated_code, "<%s>" % name, "exec")
 
             # We add the previously generated grammars and the defined directives to the global definitions
@@ -127,13 +128,13 @@ class Grammar(object, metaclass=GrammarBase):
     def parse(self, source, ast, rule_name="main"):
         """Parse the grammar"""
 
-        func_name = "%sRule" % rule_name
+        func_name = "%s_rule" % rule_name
         node.next_is(ast, ast)
-        dsl_parser.Parsing.oBaseParser.parsedStream(source)
+        dsl_parser.Parsing.o_base_parser.parsed_stream(source)
         if not hasattr(self, func_name):
             raise Exception("First rule doesn't exist : %s" % func_name)
         result = getattr(self, func_name)(ast)
         if not result:
             return False
-        dsl_parser.Parsing.oBaseParser.readWs()
-        return dsl_parser.Parsing.oBaseParser.readEOF()
+        dsl_parser.Parsing.o_base_parser.read_ws()
+        return dsl_parser.Parsing.o_base_parser.read_eof()

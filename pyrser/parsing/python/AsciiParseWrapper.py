@@ -23,421 +23,421 @@ class AsciiParseWrapper:
     """
 
     def __init__(
-        self, sStream="", sIgnore=" \r\n\t", sCLine="//", sCBegin="/*", sCEnd="*/"
+        self, s_stream="", s_ignore=" \r\n\t", s_c_line="//", s_c_begin="/*", s_c_end="*/"
     ):
-        if len(sCLine) == 0:
+        if len(s_c_line) == 0:
             raise Exception(
                 "Line comment open tag should be 1 character long at minimum"
             )
-        if len(sCBegin) < 2 or len(sCEnd) < 2:
+        if len(s_c_begin) < 2 or len(s_c_end) < 2:
             raise Exception(
                 "comment open tag and close tag should be 2 character long at minimum."
             )
-        self.__dTag = {}
-        self.__lStream = [Stream(sStream, "root", sIgnore)]
-        self.__sCLine = sCLine
+        self.__d_tag = {}
+        self.__l_stream = [Stream(s_stream, "root", s_ignore)]
+        self.__s_c_line = s_c_line
         # TODO: Not HERE
-        self.__sCBegin = sCBegin
-        self.__sCEnd = sCEnd
-        self.__sIgnore = sIgnore
+        self.__s_c_begin = s_c_begin
+        self.__s_c_end = s_c_end
+        self.__s_ignore = s_ignore
 
     ### PRIVATE
 
-    def __getChar(self):
+    def __get_char(self):
         """
         Return byte pointed by current stream index.
         """
-        return self.getStream().getChar()
+        return self.get_stream().get_char()
 
-    def __getCharAt(self, nIndex):
+    def __get_char_at(self, n_index):
         """
         Return byte pointed by the given index.
         """
-        return self.getStream().getCharAt(nIndex)
+        return self.get_stream().get_charAt(n_index)
 
-    def __eofPos(self):
+    def __eof_pos(self):
         """
         Return True if eof is reached.
         """
-        return self.getStream().eofPos()
+        return self.get_stream().eof_pos()
 
-    def __lineComment(self):
+    def __line_comment(self):
         """
         Read a one line comment.
         """
-        if self.peekText(self.__sCLine):
-            while self.readEOF() == False and self.__getChar() != "\n":
-                self.incPos()
+        if self.peek_text(self.__s_c_line):
+            while self.read_eof() == False and self.__get_char() != "\n":
+                self.inc_pos()
             return True
         return False
 
-    def __peekTextFrom(self, sText, nIndex):
+    def __peek_text_from(self, s_text, n_index):
         """
         Same behaviour as peekText except that it begin at a certain index.
         """
-        nLen = len(sText)
-        nTextIndex = 0
-        while nIndex != self.__eofPos() and nTextIndex < nLen:
-            if self.__getCharAt(nIndex) != sText[nTextIndex]:
+        n_len = len(s_text)
+        n_text_index = 0
+        while n_index != self.__eof_pos() and n_text_index < n_len:
+            if self.__get_char_at(n_index) != s_text[n_text_index]:
                 return False
-            nIndex += 1
-            nTextIndex += 1
-        if nTextIndex == nLen:
+            n_index += 1
+            n_text_index += 1
+        if n_text_index == n_len:
             return True
         return False
 
-    def __peekComment(self, nIndex):
+    def __peek_comment(self, n_index):
         """
         Check for the end tag of a comment.
         """
         # FIXME : context save? compare perfs
-        nInner = 0
-        while nIndex != self.__eofPos():
-            if self.__getCharAt(nIndex) == self.__sCEnd[0] and self.__peekTextFrom(
-                self.__sCEnd, nIndex
+        n_inner = 0
+        while n_index != self.__eof_pos():
+            if self.__get_char_at(n_index) == self.__s_c_end[0] and self.__peek_text_from(
+                self.__s_c_end, n_index
             ):
-                self.getStream().incPosOf((nIndex - self.index()) + len(self.__sCEnd))
-                return nIndex
-            if self.__getCharAt(nIndex) == self.__sCBegin[0] and self.__peekTextFrom(
-                self.__sCBegin, nIndex
+                self.get_stream().inc_posOf((n_index - self.index()) + len(self.__s_c_end))
+                return n_index
+            if self.__get_char_at(n_index) == self.__s_c_begin[0] and self.__peek_text_from(
+                self.__s_c_begin, n_index
             ):
-                nIndex += len(self.__sCBegin)
-                nInner = self.__peekComment(nIndex)
-                if nInner != 0:
-                    nIndex = nInner
-            nIndex += 1
+                n_index += len(self.__s_c_begin)
+                n_inner = self.__peek_comment(n_index)
+                if n_inner != 0:
+                    n_index = n_inner
+            n_index += 1
         return 0
 
     ### PUBLIC ACCESSOR
     # TODO: READ ONLY
 
-    def notIgnore(self):
+    def not_ignore(self):
         return False
 
-    def getStream(self):
+    def get_stream(self):
         """
         Return current used Stream.
         """
-        return self.__lStream[-1]
+        return self.__l_stream[-1]
 
-    def getName(self):
+    def get_name(self):
         """
         Return current Stream name.
         """
-        return self.getStream().getName()
+        return self.get_stream().getName()
 
-    def getStreamLen(self):
+    def get_stream_len(self):
         """
         Return the len of the current stream.
         """
-        return self.__eofPos()
+        return self.__eof_pos()
 
-    def getColumnNbr(self):
+    def get_column_nbr(self):
         """
         Return the number of column that was parsed.
         """
-        return self.getStream().getColumnNbr()
+        return self.get_stream().get_column_nbr()
 
-    def getLineNbr(self):
+    def get_line_nbr(self):
         """
         Return the number of line that was parsed.
         """
-        return self.getStream().getLineNbr()
+        return self.get_stream().get_line_nbr()
 
-    def printStream(self, nIndex=0):
+    def print_stream(self, n_index=0):
         """
         Print current real stream contained.
         """
-        return self.getStream().printStream(nIndex)
+        return self.get_stream().printStream(n_index)
 
     ### PARSING PRIMITIVE
 
-    def peekChar(self, cC):
+    def peek_char(self, c_c):
         """
         Test if head byte is equal to c and return true else return false.
         """
-        return not self.readEOF() and self.__getChar() == cC
+        return not self.read_eof() and self.__get_char() == c_c
 
-    def peekText(self, sText):
+    def peek_text(self, s_text):
         """
-        Same as readText but doesn't consume the stream.
+        Same as read_text but doesn't consume the stream.
         """
-        nLength = len(sText)
-        nIndex = self.index()
-        nTextIndex = 0
-        while nIndex != self.__eofPos() and nTextIndex < nLength:
-            if self.__getCharAt(nIndex) != sText[nTextIndex]:
+        n_length = len(s_text)
+        n_index = self.index()
+        n_text_index = 0
+        while n_index != self.__eof_pos() and n_text_index < n_length:
+            if self.__get_char_at(n_index) != s_text[n_text_index]:
                 return False
-            nIndex += 1
-            nTextIndex += 1
-        return nIndex == nLength
+            n_index += 1
+            n_text_index += 1
+        return n_index == n_length
 
     ### READ PRIMITIVE
 
-    def readChar(self, cC):
+    def read_char(self, c_c):
         """
         Consume the c head byte, increment current index and return True
         else return False. It use peekchar and it's the same as '' in BNF.
         """
-        self.readIgnored()  # TODO: in engine
-        self.saveContext()
-        if self.peekChar(cC):
-            self.incPos()
-            return self.validContext()
-        return self.restoreContext()
+        self.read_ignored()  # TODO: in engine
+        self.save_context()
+        if self.peek_char(c_c):
+            self.inc_pos()
+            return self.valid_context()
+        return self.restore_context()
 
-    def readWs(self):
+    def read_ws(self):
         """
         Consume head byte while it is contained in the WS liste.
         """
-        while not self.readEOF():
-            if self.__getChar() not in self.getWsList():
-                # print("<%s> not in <%s>" % (bytes(self.__getChar(), "ascii"), bytes(self.getWsList(), "ascii")))
+        while not self.read_eof():
+            if self.__get_char() not in self.get_ws_list():
+                # print("<%s> not in <%s>" % (bytes(self.__get_char(), "ascii"), bytes(self.get_ws_list(), "ascii")))
                 return True
-            self.incPos()
+            self.inc_pos()
         return False
 
-    def readAChar(self):
+    def read_a_char(self):
         """
         Consume a character if possible.
         """
-        self.readIgnored()  # TODO: in engine
-        self.saveContext()
-        if self.index() + 1 < self.__eofPos():
-            cC = self.__getChar()
-            self.incPos()
-            return self.validContext()
-        return self.restoreContext()
+        self.read_ignored()  # TODO: in engine
+        self.save_context()
+        if self.index() + 1 < self.__eof_pos():
+            c_c = self.__get_char()
+            self.inc_pos()
+            return self.valid_context()
+        return self.restore_context()
 
-    def readComment(self):
+    def read_comment(self):
         # TODO: Faux
         """
         Consume all that is between and open and a close comment tag.
         """
-        if self.__lineComment():
+        if self.__line_comment():
             return True
-        if self.peekText(self.__sCBegin) == False:
+        if self.peek_text(self.__s_c_begin) == False:
             return False
-        if self.__peekComment(self.index() + len(self.__sCBegin)) != 0:
+        if self.__peek_comment(self.index() + len(self.__s_c_begin)) != 0:
             return True
-        raise Exception("No comment close tag found " + self.__sCBegin + " .")
+        raise Exception("No comment close tag found " + self.__s_c_begin + " .")
 
-    def readIgnored(self):
+    def read_ignored(self):
         # TODO: must be a rule forwarder
         """
         Consume comments and whitespace characters.
         """
-        self.saveContext()
-        self.readWs()
-        return self.validContext()
+        self.save_context()
+        self.read_ws()
+        return self.valid_context()
 
-    def readEOF(self):
+    def read_eof(self):
         """
         Returns true if reach end of the stream.
         """
-        return self.index() >= self.__eofPos()
+        return self.index() >= self.__eof_pos()
 
-    def readEOL(self):
+    def read_eol(self):
         """
         Return True if the parser can consume an EOL byte sequence.
         """
-        self.readIgnored()  # TODO: in engine
-        self.saveContext()
-        self.readChar("\r")
-        if self.readChar("\n"):
-            return self.validContext()
-        return self.restoreContext()
+        self.read_ignored()  # TODO: in engine
+        self.save_context()
+        self.read_char("\r")
+        if self.read_char("\n"):
+            return self.valid_context()
+        return self.restore_context()
 
-    def readUntil(self, cC, cInhibitor="\\"):
+    def read_until(self, c_c, c_inhibitor="\\"):
         """
         Consume the stream while the c byte is not read, else return false
-        ex : if stream is " abcdef ", readUntil("d"); consume "abcd".
+        ex : if stream is " abcdef ", read_until("d"); consume "abcd".
         """
-        self.readIgnored()  # TODO: in engine
-        self.saveContext()
-        while not self.readEOF():
-            if self.peekChar(cInhibitor):
-                self.incPos()  # Deletion of the inhibitor.
-                self.incPos()  # Deletion of the inhibited character.
-            if self.peekChar(cC):
-                self.incPos()
-                return self.validContext()
-            self.incPos()
-        return self.restoreContext()
+        self.read_ignored()  # TODO: in engine
+        self.save_context()
+        while not self.read_eof():
+            if self.peek_char(c_inhibitor):
+                self.inc_pos()  # Deletion of the inhibitor.
+                self.inc_pos()  # Deletion of the inhibited character.
+            if self.peek_char(c_c):
+                self.inc_pos()
+                return self.valid_context()
+            self.inc_pos()
+        return self.restore_context()
 
-    def readUntilEOF(self):
+    def read_until_EOF(self):
         """
         Consume all the stream. Same as EOF in BNF
         """
-        self.readIgnored()  # TODO: in engine
-        self.saveContext()
-        while self.index() != self.__eofPos():
-            self.incPos()
-        return self.validContext()
+        self.read_ignored()  # TODO: in engine
+        self.save_context()
+        while self.index() != self.__eof_pos():
+            self.inc_pos()
+        return self.valid_context()
 
-    def readText(self, sText):
+    def read_text(self, s_text):
         """
         Consume a strlen(text) text at current position in the stream
         else return False.
         Same as "" in BNF
-        ex : readText("ls");.
+        ex : read_text("ls");.
         """
-        self.readIgnored()  # TODO: in engine
-        self.saveContext()
-        nLength = len(sText)
-        nIndex = 0
-        while not self.readEOF() and nIndex < nLength:
-            if self.__getChar() != sText[nIndex]:
-                return self.restoreContext()
-            self.incPos()
-            nIndex += 1
-        if nIndex == nLength:
-            return self.validContext()
-        return self.restoreContext()
+        self.read_ignored()  # TODO: in engine
+        self.save_context()
+        n_length = len(s_text)
+        n_index = 0
+        while not self.read_eof() and n_index < n_length:
+            if self.__get_char() != s_text[n_index]:
+                return self.restore_context()
+            self.inc_pos()
+            n_index += 1
+        if n_index == n_length:
+            return self.valid_context()
+        return self.restore_context()
 
-    def readInteger(self):
+    def read_integer(self):
         """
         Read following BNF rule else return False
-        readInteger ::= ['0'..'9']+ ;
+        read_integer ::= ['0'..'9']+ ;
         """
-        self.readIgnored()  # TODO: in engine
-        self.saveContext()
-        if self.readEOF() == False and self.__getChar().isdigit():
-            self.incPos()
-            while not self.readEOF() and self.__getChar().isdigit():
-                self.incPos()
-            return self.validContext()
-        return self.restoreContext()
+        self.read_ignored()  # TODO: in engine
+        self.save_context()
+        if self.read_eof() == False and self.__get_char().isdigit():
+            self.inc_pos()
+            while not self.read_eof() and self.__get_char().isdigit():
+                self.inc_pos()
+            return self.valid_context()
+        return self.restore_context()
 
-    def readIdentifier(self):
+    def read_identifier(self):
         """
         Read following BNF rule else return False
-        readIdentifier ::= ['a'..'z'|'A'..'Z'|'_']['0'..'9'|'a'..'z'|'A'..'Z'|'_']* ;
+        read_identifier ::= ['a'..'z'|'A'..'Z'|'_']['0'..'9'|'a'..'z'|'A'..'Z'|'_']* ;
         """
-        self.readIgnored()  # TODO: in engine
-        self.saveContext()
-        if not self.readEOF() and (self.__getChar().isalpha() or self.peekChar("_")):
-            self.incPos()
-            while not self.readEOF() and (
-                self.__getChar().isalpha()
-                or self.__getChar().isdigit()
-                or self.peekChar("_")
+        self.read_ignored()  # TODO: in engine
+        self.save_context()
+        if not self.read_eof() and (self.__get_char().isalpha() or self.peek_char("_")):
+            self.inc_pos()
+            while not self.read_eof() and (
+                self.__get_char().isalpha()
+                or self.__get_char().isdigit()
+                or self.peek_char("_")
             ):
-                self.incPos()
-            return self.validContext()
-        return self.restoreContext()
+                self.inc_pos()
+            return self.valid_context()
+        return self.restore_context()
 
-    def readRange(self, begin, end):
+    def read_range(self, begin, end):
         """
         Consume head byte if it is >= begin and <= end else return false
         Same as 'a'..'z' in BNF
         """
-        self.readIgnored()  # TODO: in engine
-        if self.__getChar() >= begin and self.__getChar() <= end:
-            self.incPos()
+        self.read_ignored()  # TODO: in engine
+        if self.__get_char() >= begin and self.__get_char() <= end:
+            self.inc_pos()
             return True
         return False
 
-    def readCString(self):
+    def read_c_string(self):
         """
         Read following BNF rule else return False
         '"' -> ['/'| '"']
         """
-        self.readIgnored()  # TODO: in engine
-        self.saveContext()
-        if self.readChar('"') and self.readUntil('"', "\\"):
-            return self.validContext()
-        return self.restoreContext()
+        self.read_ignored()  # TODO: in engine
+        self.save_context()
+        if self.read_char('"') and self.read_until('"', "\\"):
+            return self.valid_context()
+        return self.restore_context()
 
-    def readCChar(self):
+    def read_c_char(self):
         # TODO: octal digit, hex digit
         """
         Read following BNF rule else return False
         "'" -> [~"/" "'"]
         """
-        self.readIgnored()  # TODO: in engine
-        self.saveContext()
-        if self.readChar("'") and self.readUntil("'", "\\"):
-            return self.validContext()
-        return self.restoreContext()
+        self.read_ignored()  # TODO: in engine
+        self.save_context()
+        if self.read_char("'") and self.read_until("'", "\\"):
+            return self.valid_context()
+        return self.restore_context()
 
     ### CONTEXT
 
-    def saveContext(self):
+    def save_context(self):
         """
         Stack the current index position.
         """
-        return self.getStream().saveContext()
+        return self.get_stream().save_context()
 
-    def restoreContext(self):
+    def restore_context(self):
         """
         Pop the last index position and set current stream index to this value.
         """
-        return self.getStream().restoreContext()
+        return self.get_stream().restore_context()
 
-    def validContext(self):
+    def valid_context(self):
         """
         Pop all useless contexts to keep one context only.
         """
-        return self.getStream().validContext()
+        return self.get_stream().valid_context()
 
     ### STREAM
 
-    def parsedStream(self, sNewStream, sName="new", sIgnore=" \r\n\t"):
+    def parsed_stream(self, s_new_stream, s_name="new", s_ignore=" \r\n\t"):
         """
         Push a new Stream into the parser.
         All subsequent called functions will parse this new stream,
-        until the 'popStream' function is called.
+        until the 'pop_stream' function is called.
         """
-        self.__lStream.append(Stream(sNewStream, sName, sIgnore))
+        self.__l_stream.append(Stream(s_new_stream, s_name, s_ignore))
 
-    def popStream(self):
+    def pop_stream(self):
         """
         Pop the last Stream pushed on to the parser stack.
         """
-        self.__lStream.pop()
+        self.__l_stream.pop()
 
     def index(self):
         """
         Return the index value.
         This value is used by the parser to point current byte.
         """
-        return self.getStream().index()
+        return self.get_stream().index()
 
-    def getWsList(self):
+    def get_ws_list(self):
         """
         Return a string containing the ignored characters.
         """
-        # return self.getStream().getWsList()
-        return self.__sIgnore
+        # return self.get_stream().getWsList()
+        return self.__s_ignore
 
-    def setWsList(self, sNewWsList):
+    def set_ws_list(self, s_new_ws_list):
         """
         Set the list of caracter ignored by the parser.
         """
-        self.getStream().setWsList(sNewWsList)
+        self.get_stream().setWsList(s_new_ws_list)
 
-    def incPos(self):
+    def inc_pos(self):
         """
         Increment current index, column and line count.
         Should not be used, or only when sure.
         """
-        return self.getStream().incPos()
+        return self.get_stream().inc_pos()
 
-    # TODO: change for beginTag,endTag,getTag for multicapture, and typesetting at endTag (i.e: readCChar,readCString need transcoding)
-    def setTag(self, sName):
+    # TODO: change for beginTag,endTag,get_tag for multicapture, and typesetting at endTag (i.e: read_c_char,read_c_string need transcoding)
+    def set_tag(self, s_name):
         """
         Save the current index under the given name.
         """
-        self.readIgnored()  # TODO: in engine
-        self.__dTag[sName] = self.index()
+        self.read_ignored()  # TODO: in engine
+        self.__d_tag[s_name] = self.index()
         return True
 
-    def getTag(self, sName):
+    def get_tag(self, s_name):
         """
         Extract the string between the saved index value and the current one.
         """
-        return self.getStream().getContentRelative(self.__dTag[sName])
+        return self.get_stream().get_content_relative(self.__d_tag[s_name])
 
-    def getStreamNbr(self):
-        return len(self.__lStream)
+    def get_stream_nbr(self):
+        return len(self.__l_stream)

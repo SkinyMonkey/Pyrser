@@ -33,22 +33,22 @@ class MultiMath(Father, Grammar):
     globals = globals()
 
 
-class generatedCode(unittest.TestCase):
+class GeneratedCode(unittest.TestCase):
     @classmethod
-    def setUpClass(cGeneratedCodeClass):
-        cGeneratedCodeClass.oRoot = {}
-        cGeneratedCodeClass.oGrammar = Math()
+    def setUpClass(c_generated_code_class):
+        c_generated_code_class.o_root = {}
+        c_generated_code_class.o_grammar = Math()
 
     def test_inheritance(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("12 + 4", self.oRoot, "operand"),
+            GeneratedCode.o_grammar.parse("12 + 4", self.o_root, "operand"),
             True,
             "failed in inheritance",
         )
 
     def test_inheritance_multi_depth(self):
         self.assertEqual(
-            MultiMath().parse("12 + 3 + 5", self.oRoot, "operand"),
+            MultiMath().parse("12 + 3 + 5", self.o_root, "operand"),
             True,
             "failed in multi inheritance",
         )

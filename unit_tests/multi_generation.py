@@ -37,7 +37,7 @@ class MultiDepthGeneration(Grammar):
     not ::= [!"toto" #identifier !"tata" #identifier !"titi" #identifier]
       ;
 
-    alt ::= [[#identifier | #num] [ #char | #string] [#cchar | #notIgnore]]
+    alt ::= [[#identifier | #num] [ #char | #string] [#cchar | #not_ignore]]
       ;
 
     terminal_range1 ::= ['0'{1} '1'{2} '2'{3}]
@@ -47,66 +47,66 @@ class MultiDepthGeneration(Grammar):
       ;
     """
 
-    def testHook(self, oNode):
+    def test_hook(self, o_node):
         return True
 
-    def test2Hook(self, oNode):
+    def test2_hook(self, o_node):
         return True
 
-    def test3Hook(self, oNode):
+    def test3_hook(self, o_node):
         return True
 
-    def testWrapper(self, oRule, oNode):
-        if "list" not in oNode:
-            oNode["list"] = []
-        bRes = oRule()
-        oNode["list"].append(oNode["test"])
-        del oNode["test"]
-        return bRes
+    def test_wrapper(self, o_rule, o_node):
+        if "list" not in o_node:
+            o_node["list"] = []
+        b_res = o_rule()
+        o_node["list"].append(o_node["test"])
+        del o_node["test"]
+        return b_res
 
 
-class generatedCode(unittest.TestCase):
+class GeneratedCode(unittest.TestCase):
     @classmethod
-    def setUpClass(cGeneratedCodeClass):
-        cGeneratedCodeClass.oRoot = {}
-        cGeneratedCodeClass.oGrammar = MultiDepthGeneration()
+    def setUpClass(c_generated_code_class):
+        c_generated_code_class.o_root = {}
+        c_generated_code_class.o_grammar = MultiDepthGeneration()
 
     def test_directive(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse('id "ok" 123', self.oRoot, "directive"),
+            GeneratedCode.o_grammar.parse('id "ok" 123', self.o_root, "directive"),
             True,
             "failed in directive",
         )
 
     def test_capture(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("id id2 id3", self.oRoot, "capture"),
+            GeneratedCode.o_grammar.parse("id id2 id3", self.o_root, "capture"),
             True,
             "failed in capture",
         )
 
     def test_hook(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("", self.oRoot, "hook"), True, "failed in hook"
+            GeneratedCode.o_grammar.parse("", self.o_root, "hook"), True, "failed in hook"
         )
 
     def test_wrapper(self):
-        generatedCode.oGrammar.parse("foo, bar, rab", self.oRoot, "wrapper"),
+        GeneratedCode.o_grammar.parse("foo, bar, rab", self.o_root, "wrapper"),
         self.assertEqual(
-            self.oRoot["list"] == ["foo", "bar", "rab"], True, "failed in hook"
+            self.o_root["list"] == ["foo", "bar", "rab"], True, "failed in hook"
         )
 
     def test_range(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("i 8 U", self.oRoot, "range"),
+            GeneratedCode.o_grammar.parse("i 8 U", self.o_root, "range"),
             True,
             "failed in range",
         )
 
-    def test_nonTerminal(self):
+    def test_non_terminal(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse(
-                'id "ok" 123 id "ko" 456 la "to" 789', self.oRoot, "nonTerminal"
+            GeneratedCode.o_grammar.parse(
+                'id "ok" 123 id "ko" 456 la "to" 789', self.o_root, "nonTerminal"
             ),
             True,
             "failed in nonTerminal",
@@ -114,48 +114,48 @@ class generatedCode(unittest.TestCase):
 
     def test_until(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("155525553", self.oRoot, "until"),
+            GeneratedCode.o_grammar.parse("155525553", self.o_root, "until"),
             True,
             "failed in nonTerminal",
         )
 
     def test_multiplier(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("123", self.oRoot, "multiplier"),
+            GeneratedCode.o_grammar.parse("123", self.o_root, "multiplier"),
             True,
             "failed in multiplier",
         )
 
     def test_not(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("lol ok haha", self.oRoot, "not"),
+            GeneratedCode.o_grammar.parse("lol ok haha", self.o_root, "not"),
             True,
             "failed in not",
         )
 
     #      def test_complement(self):
     #          self.assertEqual(
-    # 	      generatedCode.oGrammar.parse('01 0022 000333', self.oRoot, 'not'),
+    # 	      GeneratedCode.o_grammar.parse('01 0022 000333', self.oRoot, 'not'),
     # 	      True,
     # 	      'failed in complement')
 
     def test_alt(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("id a 'a'", self.oRoot, "alt"),
+            GeneratedCode.o_grammar.parse("id a 'a'", self.o_root, "alt"),
             True,
             "failed in alt",
         )
 
     def test_terminal_range1(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("0 11 222", self.oRoot, "terminal_range1"),
+            GeneratedCode.o_grammar.parse("0 11 222", self.o_root, "terminal_range1"),
             True,
             "failed in terminal_range #1",
         )
 
     def test_terminal_range2(self):
         self.assertEqual(
-            generatedCode.oGrammar.parse("00 111 22222", self.oRoot, "terminal_range2"),
+            GeneratedCode.o_grammar.parse("00 111 22222", self.o_root, "terminal_range2"),
             True,
             "failed in terminal_range #2",
         )

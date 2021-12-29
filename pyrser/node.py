@@ -20,87 +20,87 @@ from copy import copy
 from functools import wraps
 
 
-def new_node(oParent, sType=None):
-    if oParent != None and id(oParent) in oParent:
-        oNode = oParent[id(oParent)]
-        oNode["parent"] = oParent
+def new_node(o_parent, s_type=None):
+    if o_parent != None and id(o_parent) in o_parent:
+        o_node = o_parent[id(o_parent)]
+        o_node["parent"] = o_parent
     # FIXME : faire tests pour savoir si c'est bon
-    # del oParent[id(oParent)]
+    # del o_parent[id(o_parent)]
     else:
-        oNode = {"parent": oParent}
+        o_node = {"parent": o_parent}
 
-    if sType != None and "type" not in oNode:
-        oNode["type"] = sType
-    return oNode
+    if s_type != None and "type" not in o_node:
+        o_node["type"] = s_type
+    return o_node
 
 
-def node(sType=None):
-    def wrapper(oTarget):
-        @wraps(oTarget)
-        def wrapped(*lArgs):
-            # if type(lArgs[0]) != DictType:
-            if not isinstance(lArgs[0], dict):
-                oNode = new_node(lArgs[1], sType)
-                bRes = oTarget(lArgs[0], oNode)
+def node(s_type=None):
+    def wrapper(o_target):
+        @wraps(o_target)
+        def wrapped(*l_args):
+            # if type(l_args[0]) != DictType:
+            if not isinstance(l_args[0], dict):
+                o_node = new_node(l_args[1], s_type)
+                b_res = o_target(l_args[0], o_node)
             else:
-                oNode = new_node(lArgs[0], sType)
-                bRes = oTarget(oNode)
-            return bRes
+                o_node = new_node(l_args[0], s_type)
+                b_res = o_target(o_node)
+            return b_res
 
         return wrapped
 
     return wrapper
 
 
-def clean_tree(oParent, sName):
-    # if type(oParent) == DictType:
-    if isinstance(oParent, dict):
-        for iKey, iValue in list(oParent.items()):
-            if iKey != "parent" and iValue != oParent:
-                clean_tree(iValue, sName)
-        if sName in oParent:
-            del oParent[sName]
-    # elif type(oParent) == ListType:
-    elif isinstance(oParent, list):
-        for iValue in oParent:
-            if iValue != oParent:
-                clean_tree(iValue, sName)
+def clean_tree(o_parent, s_name):
+    # if type(o_parent) == DictType:
+    if isinstance(o_parent, dict):
+        for i_key, i_value in list(o_parent.items()):
+            if i_key != "parent" and i_value != o_parent:
+                clean_tree(i_value, s_name)
+        if s_name in o_parent:
+            del o_parent[s_name]
+    # elif type(o_parent) == ListType:
+    elif isinstance(o_parent, list):
+        for i_value in o_parent:
+            if i_value != o_parent:
+                clean_tree(i_value, s_name)
 
 
-def clean_tree_from_metadata(oRoot):
-    clean_tree(oRoot, "parent")
-    clean_tree(oRoot, "type")
+def clean_tree_from_metadata(o_root):
+    clean_tree(o_root, "parent")
+    clean_tree(o_root, "type")
 
 
-def slide(oNode, sName):
-    oTmp = copy(oNode)
-    oNode.clear()
-    if id(oNode) in oTmp:
-        del oTmp[id(oNode)]
-    oNode[sName] = oTmp
+def slide(o_node, s_name):
+    o_tmp = copy(o_node)
+    o_node.clear()
+    if id(o_node) in o_tmp:
+        del o_tmp[id(o_node)]
+    o_node[s_name] = o_tmp
 
-    oNode["parent"] = oTmp["parent"]
-    oTmp["parent"] = oNode
-    return oNode
-
-
-def next(oNode, sName):
-    if sName not in oNode:
-        oNode[sName] = {"parent": oNode}
-    oNode[id(oNode)] = oNode[sName]
-    return oNode
+    o_node["parent"] = o_tmp["parent"]
+    o_tmp["parent"] = o_node
+    return o_node
 
 
-def next_is(oNode, oSubNode):
-    oNode[id(oNode)] = oSubNode
-    return oNode
+def next(o_node, s_name):
+    if s_name not in o_node:
+        o_node[s_name] = {"parent": o_node}
+    o_node[id(o_node)] = o_node[s_name]
+    return o_node
 
 
-def next_clean(oNode):
-    if id(oNode) in oNode:
-        del oNode[id(oNode)]
-    return oNode
+def next_is(o_node, o_sub_node):
+    o_node[id(o_node)] = o_sub_node
+    return o_node
 
 
-def has_next(oNode):
-    return id(oNode) in oNode
+def next_clean(o_node):
+    if id(o_node) in o_node:
+        del o_node[id(o_node)]
+    return o_node
+
+
+def has_next(o_node):
+    return id(o_node) in o_node

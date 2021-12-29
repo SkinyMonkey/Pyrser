@@ -22,7 +22,7 @@ from pyrser.dsl_parser.dsl_error import GrammarException
 """
 Hook called to build the tree/work on the stream.
 """
-dBuiltins = (
+d_builtins = (
     "identifier",
     "num",
     "string",
@@ -32,17 +32,17 @@ dBuiltins = (
     "end",
     "empty",
     "super",
-    "notIgnore",
+    "not_ignore",
     "resetIgnore",
 )
 
 
-def injectExpression(lAlternative):
+def inject_expression(l_alternative):
     return [
         {
             "multiplier": "[]",
             "terminal": {
-                "clauses": {"alternatives": [lAlternative], "type": "clause"},
+                "clauses": {"alternatives": [l_alternative], "type": "clause"},
                 "type": "expr",
             },
             "type": "multiplier",
@@ -50,155 +50,155 @@ def injectExpression(lAlternative):
     ]
 
 
-def injectAlternative(oNode):
-    if len(oNode["clauses"]["alternatives"]) > 1:
-        oNode["clauses"]["alternatives"] = [
+def inject_alternative(o_node):
+    if len(o_node["clauses"]["alternatives"]) > 1:
+        o_node["clauses"]["alternatives"] = [
             [
                 {
-                    "alternatives": oNode["clauses"]["alternatives"],
+                    "alternatives": o_node["clauses"]["alternatives"],
                     "type": "alternative_terminal",
                 }
             ]
         ]
-    return oNode
+    return o_node
 
 
-def injectUnaryTerminal(oNode, sField):
-    oTmp = new_node(None, sField)
-    oTmp[sField] = oNode[sField]
-    oTmp["terminal"] = oNode["terminal"]
-    oNode["terminal"] = oTmp
+def inject_unary_terminal(o_node, s_field):
+    o_tmp = new_node(None, s_field)
+    o_tmp[s_field] = o_node[s_field]
+    o_tmp["terminal"] = o_node["terminal"]
+    o_node["terminal"] = o_tmp
 
 
-def injectAggregated(oNode):
-    if "aggregation" in oNode:
-        oTmp = new_node(oNode["parent"], "aggregation")
-        oTmp["name"] = oNode["name"]
-        oNode["name"] = oNode["aggregation"]
-        oTmp["nonTerminal"] = oNode
-        del oNode["aggregation"]
-        del oNode["parent"]
-        oNode = oTmp
-    return oNode
+def inject_aggregated(o_node):
+    if "aggregation" in o_node:
+        o_tmp = new_node(o_node["parent"], "aggregation")
+        o_tmp["name"] = o_node["name"]
+        o_node["name"] = o_node["aggregation"]
+        o_tmp["non_terminal"] = o_node
+        del o_node["aggregation"]
+        del o_node["parent"]
+        o_node = o_tmp
+    return o_node
 
 
-def swapTerminal(oNode):
-    oTmp = oNode["parent"]["terminal"]
-    oNode["terminal"] = oTmp
-    oNode["parent"]["terminal"] = oNode
+def swap_terminal(o_node):
+    o_tmp = o_node["parent"]["terminal"]
+    o_node["terminal"] = o_tmp
+    o_node["parent"]["terminal"] = o_node
 
 
-def rulesHook(oNode):
-    if "rules" not in oNode["parent"]:
-        oNode["parent"]["rules"] = []
+def rules_hook(o_node):
+    if "rules" not in o_node["parent"]:
+        o_node["parent"]["rules"] = []
 
-    oNode = injectAlternative(oNode)
-    oNode["parent"]["rules"].append(oNode)
+    o_node = inject_alternative(o_node)
+    o_node["parent"]["rules"].append(o_node)
     return True
 
 
-def rule_nameHook(oNode):
-    oNode["parent"]["prototype"] = oNode
+def rule_name_hook(o_node):
+    o_node["parent"]["prototype"] = o_node
     return True
 
 
-def paramHook(oNode):
-    oNode["parent"]["param"] = oNode["param"][1:-1]
+def param_hook(o_node):
+    o_node["parent"]["param"] = o_node["param"][1:-1]
     return True
 
 
-def rule_directiveHook(oNode):
-    if "rule_directive" not in oNode["parent"]:
-        oNode["parent"]["rule_directive"] = []
-    oNode["parent"]["rule_directive"].append(oNode)
+def rule_directive_hook(o_node):
+    if "rule_directive" not in o_node["parent"]:
+        o_node["parent"]["rule_directive"] = []
+    o_node["parent"]["rule_directive"].append(o_node)
     return True
 
 
-def headclausesHook(oNode):
-    oNode["alternatives"] = [[]]
+def headclauses_hook(o_node):
+    o_node["alternatives"] = [[]]
     return True
 
 
-def tailclausesHook(oNode):
-    oNode["alternatives"].append([])
+def tailclauses_hook(o_node):
+    o_node["alternatives"].append([])
     return True
 
 
-def clausesHook(oNode):
-    if len(oNode["alternatives"]) > 1:
-        nIndex = 0
-        for iAlternative in oNode["alternatives"]:
-            if len(iAlternative) > 1:
-                oNode["alternatives"][nIndex] = injectExpression(iAlternative)
-            nIndex += 1
-    oNode["parent"]["clauses"] = oNode
+def clauses_hook(o_node):
+    if len(o_node["alternatives"]) > 1:
+        n_index = 0
+        for i_alternative in o_node["alternatives"]:
+            if len(i_alternative) > 1:
+                o_node["alternatives"][n_index] = inject_expression(i_alternative)
+            n_index += 1
+    o_node["parent"]["clauses"] = o_node
     return True
 
 
-def alternativeHook(oNode):
-    if "wrapper" in oNode:
-        oNode["type"] = "wrapper"
-        injectUnaryTerminal(oNode, "wrapper")
-        if "param" in oNode:
-            oNode["terminal"]["param"] = oNode["param"]
-            del oNode["param"]
-        oNode["terminal"]["name"] = oNode["name"]
-        del oNode["wrapper"]
+def alternative_hook(o_node):
+    if "wrapper" in o_node:
+        o_node["type"] = "wrapper"
+        inject_unary_terminal(o_node, "wrapper")
+        if "param" in o_node:
+            o_node["terminal"]["param"] = o_node["param"]
+            del o_node["param"]
+        o_node["terminal"]["name"] = o_node["name"]
+        del o_node["wrapper"]
 
-    oNode["parent"]["alternatives"][-1].append(oNode["terminal"])
+    o_node["parent"]["alternatives"][-1].append(o_node["terminal"])
     return True
 
 
-def nonTerminalHook(oNode):
-    oNode = injectAggregated(oNode)
+def non_terminal_hook(o_node):
+    o_node = inject_aggregated(o_node)
 
-    oNode["parent"]["terminal"] = oNode
-    del oNode["parent"]
+    o_node["parent"]["terminal"] = o_node
+    del o_node["parent"]
     return True
 
 
-def aggregationHook(oNode):
-    del oNode["parent"]
+def aggregation_hook(o_node):
+    del o_node["parent"]
     return True
 
 
-def terminalHook(oNode):
-    for iController in ("multiplier", "not"):
-        if iController in oNode:
-            injectUnaryTerminal(oNode, iController)
+def terminal_hook(o_node):
+    for i_controller in ("multiplier", "not"):
+        if i_controller in o_node:
+            inject_unary_terminal(o_node, i_controller)
 
-    oNode["parent"]["terminal"] = oNode["terminal"]
+    o_node["parent"]["terminal"] = o_node["terminal"]
     return True
 
 
-def directiveHook(oNode):
-    if oNode["name"] not in dBuiltins:
-        oNode["type"] = "hook"
-    elif "param" in oNode:
+def directive_hook(o_node):
+    if o_node["name"] not in d_builtins:
+        o_node["type"] = "hook"
+    elif "param" in o_node:
         raise GrammarException(
-            "Using parameters on a builtin directive : %s." % oNode["name"]
+            "Using parameters on a builtin directive : %s." % o_node["name"]
         )
-    if oNode["name"] == "super":
-        oNode["type"] = "super"
-    oNode["parent"]["terminal"] = oNode
-    del oNode["parent"]
+    if o_node["name"] == "super":
+        o_node["type"] = "super"
+    o_node["parent"]["terminal"] = o_node
+    del o_node["parent"]
     return True
 
 
-def cStringHook(oNode):
-    if len(oNode["string"][1:-1]) == 0:
+def c_string_hook(o_node):
+    if len(o_node["string"][1:-1]) == 0:
         raise GrammarException("Using an empty string as string literal.")
-    oNode["parent"]["terminal"] = oNode
-    del oNode["parent"]
+    o_node["parent"]["terminal"] = o_node
+    del o_node["parent"]
     return True
 
 
-def checkCCharLength(cChar):
-    if len(cChar[1:-1]) > 1 and cChar[1] != "\\":
+def check_c_char_length(c_char):
+    if len(c_char[1:-1]) > 1 and c_char[1] != "\\":
         raise GrammarException(
-            "Using a char literal which length is greater than 1 : %s" % cChar
+            "Using a char literal which length is greater than 1 : %s" % c_char
         )
-    elif len(cChar[1:-1]) == 0:
+    elif len(c_char[1:-1]) == 0:
         raise GrammarException("Using an empty string as char literal.")
 
 
@@ -206,55 +206,55 @@ def checkCCharLength(cChar):
 # chunk of waste memory.
 
 
-def cCharHook(oNode):
-    checkCCharLength(oNode["string"])
-    oNode["parent"]["terminal"] = oNode
-    del oNode["parent"]
+def c_char_hook(o_node):
+    check_c_char_length(o_node["string"])
+    o_node["parent"]["terminal"] = o_node
+    del o_node["parent"]
     return True
 
 
-def rangeHook(oNode):
-    checkCCharLength(oNode["from"])
-    checkCCharLength(oNode["to"])
-    if ord(oNode["from"][1:-1]) > ord(oNode["to"][1:-1]):
+def range_hook(o_node):
+    check_c_char_length(o_node["from"])
+    check_c_char_length(o_node["to"])
+    if ord(o_node["from"][1:-1]) > ord(o_node["to"][1:-1]):
         raise GrammarException(
             "Range : first character should be < to second : %s > %s"
-            % (oNode["from"], oNode["to"])
+            % (o_node["from"], o_node["to"])
         )
-    oNode["parent"]["terminal"] = oNode
-    del oNode["parent"]
+    o_node["parent"]["terminal"] = o_node
+    del o_node["parent"]
     return True
 
 
-def exprHook(oNode):
-    oNode = injectAlternative(oNode)
-    oExpression = {"type": "multiplier", "multiplier": "[]", "terminal": oNode}
-    oNode["parent"]["terminal"] = oExpression
-    del oNode["parent"]
+def expr_hook(o_node):
+    o_node = inject_alternative(o_node)
+    o_expression = {"type": "multiplier", "multiplier": "[]", "terminal": o_node}
+    o_node["parent"]["terminal"] = o_expression
+    del o_node["parent"]
     return True
 
 
-def untilHook(oNode):
-    oNode["parent"]["terminal"] = oNode
-    del oNode["parent"]
+def until_hook(o_node):
+    o_node["parent"]["terminal"] = o_node
+    del o_node["parent"]
     return True
 
 
-def lookAheadHook(oNode):
-    oNode["parent"]["terminal"] = oNode
-    del oNode["parent"]
+def look_ahead_hook(o_node):
+    o_node["parent"]["terminal"] = o_node
+    del o_node["parent"]
     return True
 
 
-def read_terminalRangeHook(oNode):
-    swapTerminal(oNode)
-    oNode["multiplier"] = "{}"
-    oNode["type"] = "terminal_range"
-    del oNode["parent"]
+def read_terminal_range_hook(o_node):
+    swap_terminal(o_node)
+    o_node["multiplier"] = "{}"
+    o_node["type"] = "terminal_range"
+    del o_node["parent"]
     return True
 
 
-def captureHook(oNode):
-    swapTerminal(oNode)
-    del oNode["parent"]
+def capture_hook(o_node):
+    swap_terminal(o_node)
+    del o_node["parent"]
     return True

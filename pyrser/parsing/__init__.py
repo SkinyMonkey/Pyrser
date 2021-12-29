@@ -18,22 +18,22 @@ from pyrser.parsing.python.AsciiParseWrapper import AsciiParseWrapper
 
 
 class Parsing(object):
-    oParserClass = AsciiParseWrapper
-    oBaseParser = oParserClass("")
+    o_parser_class = AsciiParseWrapper
+    o_base_parser = o_parser_class("")
 
 
-#      oFinalParser = oBaseParser
+#      oFinalParser = o_base_parser
 
 
-def getParserClass():
-    return Parsing.oParserClass
+def get_parser_class():
+    return Parsing.o_parser_class
 
 
-def setBaseParser(oBaseParser):
-    Parsing.oBaseParser = oBaseParser
+def set_base_parser(o_base_parser):
+    Parsing.o_base_parser = o_base_parser
 
 
-def resetBaseParser(
-    sStream="", sIgnore=" \r\n\t", sCLine="//", sCBegin="/*", sCEnd="*/"
+def reset_base_parser(
+    s_stream="", s_ignore=" \r\n\t", s_c_line="//", s_c_begin="/*", s_c_end="*/"
 ):
-    setBaseParser(getParserClass()(sStream, sIgnore, sCLine, sCBegin, sCEnd))
+    set_base_parser(get_parser_class()(s_stream, s_ignore, s_c_line, s_c_begin, s_c_end))

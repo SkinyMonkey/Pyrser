@@ -2,100 +2,100 @@ from copy import copy
 
 
 class AsciiParseContext:
-    def __init__(self, nIndex=0, nCol=1, nLine=1, sWsList=" \r\n\t"):
-        self.nIndex = nIndex
-        self.nCol = nCol
-        self.nLine = nLine
-        self.sWsList = sWsList
+    def __init__(self, n_index=0, n_col=1, n_line=1, s_ws_list=" \r\n\t"):
+        self.n_index = n_index
+        self.n_col = n_col
+        self.n_line = n_line
+        self.s_ws_list = s_ws_list
 
 
 class Stream:
-    def __init__(self, sString="", sName="stream", sIgnore=" \r\n\t"):
-        self.__neofPos = len(sString)
-        self.__sString = sString
-        self.__sName = sName
-        self.__lContext = [AsciiParseContext()]
+    def __init__(self, s_string="", s_name="stream", s_ignore=" \r\n\t"):
+        self.__neof_pos = len(s_string)
+        self.__s_string = s_string
+        self.__s_name = s_name
+        self.__l_context = [AsciiParseContext()]
 
     def __context(self):
-        return self.__lContext[-1]
+        return self.__l_context[-1]
 
     ##### public:
-    def saveContext(self):
-        self.__lContext.append(copy(self.__context()))
+    def save_context(self):
+        self.__l_context.append(copy(self.__context()))
 
-    def restoreContext(self):
-        self.__lContext.pop()
+    def restore_context(self):
+        self.__l_context.pop()
         return False
 
-    def validContext(self):
-        nCtxt = len(self.__lContext)
-        self.__lContext[nCtxt - 2] = self.__context()
-        self.__lContext.pop()
+    def valid_context(self):
+        n_ctxt = len(self.__l_context)
+        self.__l_context[n_ctxt - 2] = self.__context()
+        self.__l_context.pop()
         return True
 
-    def setWsList(self, sWsList):
-        self.__context().sWsList = sWsList
+    def set_ws_list(self, s_ws_list):
+        self.__context().s_ws_list = s_ws_list
 
-    def getWsList(self):
-        return self.__context().sWsList
+    def get_ws_list(self):
+        return self.__context().s_ws_list
 
     def index(self):
-        return self.__context().nIndex
+        return self.__context().n_index
 
-    def incPos(self):
-        if self.getChar() == "\n":
-            self.__context().nLine += 1
-            self.__context().nCol = 0
-        self.__context().nCol += 1
-        self.__context().nIndex += 1
+    def inc_pos(self):
+        if self.get_char() == "\n":
+            self.__context().n_line += 1
+            self.__context().n_col = 0
+        self.__context().n_col += 1
+        self.__context().n_index += 1
 
-    def incPosOf(self, nInc):
-        while nInc > 0:
-            self.incPos()
-            nInc -= 1
+    def inc_pos_of(self, n_inc):
+        while n_inc > 0:
+            self.inc_pos()
+            n_inc -= 1
 
-    def getChar(self):
-        #        print(self.__context().nIndex, "/", len(self.__sString))
+    def get_char(self):
+        #        print(self.__context().n_index, "/", len(self.__s_string))
         #        try:
-        return self.__sString[self.__context().nIndex]
+        return self.__s_string[self.__context().n_index]
 
     #        except Exception as e:
     #            print("FAILED ON GETCHAR:")
     #            print(self.__sString[self.__context().nIndex - 20: self.__context().nIndex - 1])
 
-    def getCharAt(self, nIndex):
-        return self.__sString[nIndex]
+    def get_char_at(self, n_index):
+        return self.__s_string[n_index]
 
-    def eofPos(self):
-        return self.__neofPos
+    def eof_pos(self):
+        return self.__neof_pos
 
-    def getColumnNbr(self):
-        return self.__context().nCol
+    def get_column_nbr(self):
+        return self.__context().n_col
 
-    def getLineNbr(self):
-        return self.__context().nLine
+    def get_line_nbr(self):
+        return self.__context().n_line
 
-    def getName(self):
-        return self.__sName
+    def get_name(self):
+        return self.__s_name
 
-    def lastRead(self):
-        if self.__context().nIndex > 0:
-            return self.__sString[self.__context().nIndex - 1]
-        return self.__sString[0]
+    def last_read(self):
+        if self.__context().n_index > 0:
+            return self.__s_string[self.__context().n_index - 1]
+        return self.__s_string[0]
 
-    def getContent(self):
-        return self.__sString
+    def get_content(self):
+        return self.__s_string
 
-    def getContentAbsolute(self, begin, end):
-        return self.__sString[begin:end]
+    def get_content_absolute(self, begin, end):
+        return self.__s_string[begin:end]
 
-    def getContentRelative(self, begin):
-        return self.__sString[begin : self.__context().nIndex]
+    def get_content_relative(self, begin):
+        return self.__s_string[begin : self.__context().n_index]
 
-    def printStream(self, nIndex):
-        while nIndex < self.__neofPos:
-            if self.getCharAt(nIndex).isalnum() == False:
-                print(("0x%x" % ord(self.getCharAt(nIndex))))
+    def print_stream(self, n_index):
+        while n_index < self.__neof_pos:
+            if self.get_char_at(n_index).isalnum() == False:
+                print(("0x%x" % ord(self.get_char_at(n_index))))
             else:
-                print((self.getCharAt(nIndex)))
-        nIndex += 1
+                print((self.get_char_at(n_index)))
+        n_index += 1

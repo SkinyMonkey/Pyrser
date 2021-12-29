@@ -4,11 +4,11 @@ from pyrser.grammar import Grammar
 
 
 @Grammar.directive
-def test(oRule):
-    def wrapper(*lArgs):
-        bRes = oRule(*lArgs)
-        lArgs[1]["rule_directive_test"] = True
-        return bRes
+def test(o_rule):
+    def wrapper(*l_args):
+        b_res = o_rule(*l_args)
+        l_args[1]["rule_directive_test"] = True
+        return b_res
 
     return wrapper
 
@@ -20,14 +20,14 @@ class RuleDirective(Grammar):
     """
 
 
-class generatedCode(unittest.TestCase):
+class GeneratedCode(unittest.TestCase):
     @classmethod
-    def setUpClass(oCls):
-        generatedCode.oGrammar = RuleDirective()
-        generatedCode.oRoot = {}
+    def setUpClass(o_cls):
+        GeneratedCode.oGrammar = RuleDirective()
+        GeneratedCode.oRoot = {}
 
     def test_rule_directive(self):
-        generatedCode.oGrammar.parse("identifier", self.oRoot, "rule_directive"),
+        GeneratedCode.oGrammar.parse("identifier", self.oRoot, "rule_directive"),
         self.assertEqual(
             self.oRoot["rule_directive_test"], True, "failed in rule_directive"
         )

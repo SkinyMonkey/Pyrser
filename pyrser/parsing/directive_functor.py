@@ -32,47 +32,53 @@
 
 from pyrser.parsing import Parsing
 
+def functor(fn):
+    def functor_wrapper(*l):
+        return fn(*l)
+    return functor_wrapper
+
+# TODO : replace all this by a simple wrapper
 
 class ReadText(object):
     """
-    Encapsulation of the 'readText' primitive into a functor.
+    Encapsulation of the 'read_text' primitive into a functor.
     """
 
-    __slots__ = {"__name__": "ReadText", "__sText": None}
+    __slots__ = {"__name__": "ReadText", "__s_text": None}
 
-    def __init__(self, sText):
-        self.__sText = sText
+    def __init__(self, s_text):
+        self.__s_text = s_text
 
     def __call__(self):
-        return Parsing.oBaseParser.readText(self.__sText)
+        return Parsing.o_base_parser.read_text(self.__s_text)
 
 
 class ReadChar(object):
     """
-    Encapsulation of the 'readChar' primitive into a functor.
+    Encapsulation of the 'read_char' primitive into a functor.
     """
 
-    __slots__ = {"__name__": "ReadChar", "__cChar": None}
+    __slots__ = {"__name__": "ReadChar", "__c_char": None}
 
-    def __init__(self, cChar):
-        self.__cChar = cChar
+    def __init__(self, c_char):
+        self.__c_char = c_char
 
     def __call__(self):
-        return Parsing.oBaseParser.readChar(self.__cChar)
+        return Parsing.o_base_parser.read_char(self.__c_char)
 
 
 class ReadUntil(object):
     """
-    Encapsulation of the 'readUntil' primitive into a functor.
+    Encapsulation of the 'read_until' primitive into a functor.
     """
 
-    __slots__ = {"__name__": "ReadUntil", "__cChar": None}
+    __slots__ = {"__name__": "ReadUntil", "__c_char": None}
 
-    def __init__(self, cChar):
-        self.__cChar = cChar
+    def __init__(self, c_char):
+        self.__c_char = c_char
 
     def __call__(self):
-        return Parsing.oBaseParser.readUntil(self.__cChar)
+        return Parsing.o_base_parser.read_until(self.__c_char)
 
 
 class ReadRange:
@@ -80,29 +86,29 @@ class ReadRange:
     Encapsulation of the 'readRange' primitive into a functor.
     """
 
-    __slots__ = {"__name__": "ReadRange", "__cBegin": None, "__cEnd": None}
+    __slots__ = {"__name__": "ReadRange", "__c_begin": None, "__c_end": None}
 
-    def __init__(self, cBegin, cEnd):
-        self.__cBegin = cBegin
-        self.__cEnd = cEnd
+    def __init__(self, c_begin, c_end):
+        self.__c_begin = c_begin
+        self.__c_end = c_end
 
     def __call__(self):
-        return Parsing.oBaseParser.readRange(self.__cBegin, self.__cEnd)
+        return Parsing.o_base_parser.read_range(self.__c_begin, self.__c_end)
 
 
 class NonTerminal:
     """
-    Encapsulate nonTerminal rule execution into a functor.
+    Encapsulate non_terminal rule execution into a functor.
     """
 
-    __slots__ = ("__oPredicat", "__oNode")
+    __slots__ = ("__o_predicat", "__o_node")
 
-    def __init__(self, oPredicat, oNode):
-        self.__oPredicat = oPredicat
-        self.__oNode = oNode
+    def __init__(self, o_predicat, o_node):
+        self.__o_predicat = o_predicat
+        self.__o_node = o_node
 
     def __call__(self):
-        return self.__oPredicat(self.__oNode)
+        return self.__o_predicat(self.__o_node)
 
 
 class Hook:
@@ -110,15 +116,15 @@ class Hook:
     Encapsulate hook execution into a functor.
     """
 
-    __slots__ = ("__oPredicat", "__oNode", "__lArgs")
+    __slots__ = ("__o_predicat", "__o_node", "__l_args")
 
-    def __init__(self, oPredicat, oNode, *lArgs):
-        self.__oPredicat = oPredicat
-        self.__oNode = oNode
-        self.__lArgs = lArgs
+    def __init__(self, o_predicat, o_node, *l_args):
+        self.__o_predicat = o_predicat
+        self.__o_node = o_node
+        self.__l_args = l_args
 
     def __call__(self):
-        return self.__oPredicat(self.__oNode, *self.__lArgs)
+        return self.__o_predicat(self.__o_node, *self.__l_args)
 
 
 class Super:
@@ -126,29 +132,29 @@ class Super:
     Encapsulate super() function into a functor.
     """
 
-    __slots__ = ("__oParentClass", "__oTarget", "__sRuleName", "__oNode")
+    __slots__ = ("__o_parent_class", "__o_target", "__s_rule_name", "__o_node")
 
-    def __init__(self, oParentClass, oTarget, sRuleName, oNode):
-        self.__oParentClass = oParentClass
-        self.__oTarget = oTarget
-        self.__sRuleName = sRuleName
-        self.__oNode = oNode
+    def __init__(self, o_parent_class, o_target, s_rule_name, o_node):
+        self.__o_parent_class = o_parent_class
+        self.__o_target = o_target
+        self.__s_rule_name = s_rule_name
+        self.__o_node = o_node
 
     def __call__(self):
-        return getattr(self.__oParentClass, self.__sRuleName)(
-            self.__oTarget, self.__oNode
+        return getattr(self.__o_parent_class, self.__s_rule_name)(
+            self.__o_target, self.__o_node
         )
 
 
 class NotIgnore:
     """
-    Encapsulate notIgnore directive into a functor.
+    Encapsulate not_ignore directive into a functor.
     """
 
     __slots__ = ()
 
     def __call__(self):
-        return Parsing.oBaseParser.notIgnore()
+        return Parsing.o_base_parser.not_ignore()
 
 
 class FalseDirective:
@@ -159,7 +165,7 @@ class FalseDirective:
     __slots__ = ()
 
     def __call__(self):
-        return Parsing.oBaseParser.false()
+        return Parsing.o_base_parser.false()
 
 
 class ResetIgnore(object):
@@ -170,4 +176,4 @@ class ResetIgnore(object):
     __slots__ = ()
 
     def __init__(self):
-        return Parsing.oBaseParser.resetIgnore()
+        return Parsing.o_base_parser.resetIgnore()

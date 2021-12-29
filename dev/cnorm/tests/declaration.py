@@ -36,7 +36,7 @@ working = [
 
 # "extern const unsigned int foo, bar;", # sub_type = declarator -> __variable__
 # FIXME The test in this array are not working
-lTest = [
+l_test = [
     # type declaration
     "struct foo{int a;int b;char* str;} ;",
     "union foo{int a: 10;int b;char* str;} ;",

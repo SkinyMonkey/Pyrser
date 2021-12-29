@@ -108,15 +108,15 @@ class CStatement(GenericHook, Grammar):
     #                         CStatement.__doc__,
     #                         globals())
 
-    def typeHook(self, oNode, sSubExpr, sType="__statement__"):
+    def type_hook(self, o_node, s_sub_expr, s_type="__statement__"):
         """
         Type should attribute an automatic name: per grammar function.
         """
-        oNode["type"] = "stmt"
-        oNode["sub_type"] = sSubExpr
-        return oNode
+        o_node["type"] = "stmt"
+        o_node["sub_type"] = s_sub_expr
+        return o_node
 
-    def hereHook(self, oNode):
+    def here_hook(self, o_node):
         print("HERE")
         return True
 
@@ -124,6 +124,6 @@ class CStatement(GenericHook, Grammar):
 if __name__ == "__main__":
     # FIXME : segmentation fault
     # 0   asciiParse.so   0x0000000106076d08 AsciiParse::readIgnored() const + 20
-    oRoot = {}
-    print((CStatement().parse("if (1)\n{\n}", oRoot, "statement")))
+    o_root = {}
+    print((CStatement().parse("if (1)\n{\n}", o_root, "statement")))
     print((Grammar.nCount))

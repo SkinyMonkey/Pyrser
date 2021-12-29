@@ -17,135 +17,140 @@
 from pyrser.code_generation.procedural import *
 from pyrser.code_generation.docstring import Docstring
 
+# FIXME : transform all this into templates
 
 class Python(Procedural):
-    def __init__(self, dLangConf):
-        super(Python, self).__init__(dLangConf)
-        self.__oDocstring = Docstring(self)
+    def __init__(self, d_lang_conf):
+        super(Python, self).__init__(d_lang_conf)
+        self.__o_docstring = Docstring(self)
 
     def lang_range(self, range):
-        if not self.oHelper.inRecurse():
-            self.sRes += self.oHelper.baseParserAccess()
-        self.sRes += "%s(%s, %s)" % (
-            self.capitalizeIfRecurse(self.oHelper.builtin("range")),
+        if not self.o_helper.in_recurse():
+            self.s_res += self.o_helper.base_parser_access()
+        self.s_res += "%s(%s, %s)" % (
+            self.capitalize_if_recurse(self.o_helper.builtin("range")),
             range["from"],
             range["to"],
         )
 
     def lang_directive(self, directive):
-        self.sRes += "%s%s" % (
-            self.oHelper.baseParserAccess(),
-            self.oHelper.builtin(directive["name"]),
+        self.s_res += "%s%s" % (
+            self.o_helper.base_parser_access(),
+            self.o_helper.builtin(directive["name"]),
         )
-        if not self.oHelper.inRecurse():
-            self.sRes += "()"
+        if not self.o_helper.in_recurse():
+            self.s_res += "()"
 
-    def lang_nonTerminal(self, nonTerminal):
-        if not self.oHelper.inRecurse():
-            self.sRes += "%s%sRule(oNode)" % (
-                self.oHelper.accessInstance(),
-                nonTerminal["name"],
+    def lang_non_terminal(self, non_terminal):
+        if not self.o_helper.in_recurse():
+            self.s_res += "%s%s_rule(oNode)" % (
+                self.o_helper.access_instance(),
+                non_terminal["name"],
             )
         else:
-            self.sRes += "NonTerminal(%s%sRule, oNode)" % (
-                self.oHelper.accessInstance(),
-                nonTerminal["name"],
+            self.s_res += "NonTerminal(%s%s_rule, oNode)" % (
+                self.o_helper.access_instance(),
+                non_terminal["name"],
             )
 
     def lang_wrapper(self, wrapper):
-        if not self.oHelper.inRecurse():
-            self.sRes += "%s%sWrapper" % (
-                self.oHelper.accessInstance(),
-                wrapper["name"],
+        name = wrapper["name"]
+        if name == "_": # special case for the wrapper name '_' (_wrapper)
+            name = ""
+
+        if not self.o_helper.in_recurse():
+            self.s_res += "%s%s_wrapper" % (
+                self.o_helper.access_instance(),
+                name,
             )
             self.unary(wrapper)
-            self.sRes += ",oNode"
+            self.s_res += ",oNode"
         else:
-            self.sRes += "Hook(%s%sWrapper," % (
-                self.oHelper.accessInstance(),
-                wrapper["name"],
+            self.s_res += "Hook(%s%s_wrapper," % (
+                self.o_helper.access_instance(),
+                name,
             )
             self.unary(wrapper, False)
-            self.sRes += "),oNode"
+            self.s_res += "),oNode"
         if "param" in wrapper:
-            self.sRes += ", %s" % wrapper["param"]
-        self.sRes += ")"
+            self.s_res += ", %s" % wrapper["param"]
+        self.s_res += ")"
 
     def lang_hook(self, hook):
-        if not self.oHelper.inRecurse():
-            self.sRes += "%s%sHook(oNode" % (
-                self.oHelper.accessInstance(),
+        if not self.o_helper.in_recurse():
+            self.s_res += "%s%s_hook(oNode" % (
+                self.o_helper.access_instance(),
                 hook["name"],
             )
             if "param" in hook:
-                self.sRes += ", %s" % hook["param"]
+                self.s_res += ", %s" % hook["param"]
         else:
-            self.sRes += "Hook("
-            self.sRes += self.oHelper.accessInstance()
-            self.sRes += "%sHook, oNode" % hook["name"]
+            self.s_res += "Hook("
+            self.s_res += self.o_helper.access_instance()
+            self.s_res += "%s_hook, oNode" % hook["name"]
             if "param" in hook:
-                self.sRes += ", %s" % hook["param"]
-        self.sRes += ")"
+                self.s_res += ", %s" % hook["param"]
+        self.s_res += ")"
 
     def lang_aggregation(self, aggregation):
-        if self.oHelper.inRecurse():
-            self.sRes += "NonTerminal(%s()%s%sRule, oNode)" % (
+        if self.o_helper.in_recurse():
+            self.s_res += "NonTerminal(%s()%s%s_rule, oNode)" % (
                 aggregation["name"],
-                self.oHelper.accessOperator(),
-                aggregation["nonTerminal"]["name"],
+                self.o_helper.access_operator(),
+                aggregation["non_terminal"]["name"],
             )
         else:
-            self.sRes += "%s()%s%sRule(oNode)" % (
+            self.s_res += "%s()%s%s_rule(oNode)" % (
                 aggregation["name"],
-                self.oHelper.accessOperator(),
-                aggregation["nonTerminal"]["name"],
+                self.o_helper.access_operator(),
+                aggregation["non_terminal"]["name"],
             )
 
     def lang_cchar(self, char):
-        if not self.oHelper.inRecurse():
-            self.sRes += self.oHelper.baseParserAccess()
-        self.sRes += self.capitalizeIfRecurse(self.oHelper.builtin("readThisChar"))
-        self.sRes += "(%s)" % char["string"]
+        if not self.o_helper.in_recurse():
+            self.s_res += self.o_helper.base_parser_access()
+        self.s_res += self.capitalize_if_recurse(self.o_helper.builtin("readThisChar"))
+        self.s_res += "(%s)" % char["string"]
 
     def lang_cstring(self, text):
-        if not self.oHelper.inRecurse():
-            self.sRes += self.oHelper.baseParserAccess()
-        self.sRes += self.capitalizeIfRecurse(self.oHelper.builtin("readThisText"))
-        self.sRes += "(%s)" % text["string"]
+        if not self.o_helper.in_recurse():
+            self.s_res += self.o_helper.base_parser_access()
+        self.s_res += self.capitalize_if_recurse(self.o_helper.builtin("readThisText"))
+        self.s_res += "(%s)" % text["string"]
 
     def lang_rule_directive(self, rule):
         if "rule_directive" in rule["prototype"]:
             for rule_directive in rule["prototype"]["rule_directive"]:
-                self.sRes += "      @%s" % rule_directive["name"]
+                self.s_res += "      @%s" % rule_directive["name"]
                 if "param" in rule_directive:
-                    self.sRes += "(%s)" % {{rule_directive.param}}
-                self.sRes += "\n"
+                    self.s_res += "(%s)" % {{rule_directive.param}}
+                self.s_res += "\n"
 
     def lang_rule(self, grammar_name, rule):
-        self.oHelper.setGlobal("current_rule", rule["prototype"]["name"])
+        self.o_helper.set_global("current_rule", rule["prototype"]["name"])
         #      @staticmethod
-        self.sRes += (
+        self.s_res += (
             """
-      @parsingContext
+      @parsing_context
       @node.node('%s')
 """
             % rule["prototype"]["name"]
         )
         self.lang_rule_directive(rule)
-        self.sRes += (
-            """      def %sRule(self, oNode):
+        self.s_res += (
+            """      def %s_rule(self, oNode):
           \"\"\"
           """
             % rule["prototype"]["name"]
         )
-        self.sRes += self.__oDocstring.lang_rule(grammar_name, rule)
-        self.sRes += '''          """
+        self.s_res += self.__o_docstring.lang_rule(grammar_name, rule)
+        self.s_res += '''          """
           return (True
 '''
         self.browse_rule(rule, self.lang_clauses)
-        self.sRes += ")\n"
+        self.s_res += ")\n"
 
-    def translation(self, sGrammarName, lRules):
-        self.sRes = """class %sGrammar:\n""" % sGrammarName
-        self.browse_rules(sGrammarName, lRules, self.lang_rule)
-        return self.sRes
+    def translation(self, s_grammar_name, l_rules):
+        self.s_res = """class %sGrammar:\n""" % s_grammar_name
+        self.browse_rules(s_grammar_name, l_rules, self.lang_rule)
+        return self.s_res

@@ -10,7 +10,7 @@ This set of test check the generic hook class.
 
 class GenericHookTest(GenericHook, Grammar):
     """!grammar
-    _ ::= @_ sub
+    underscore ::= @_ sub
     ;
 
     next ::= @next("bar") sub
@@ -60,61 +60,61 @@ class GenericHookTest(GenericHook, Grammar):
 
 class GenericHookTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cGeneratedCodeClass):
-        cGeneratedCodeClass.oRoot = {}
-        cGeneratedCodeClass.oGrammar = GenericHookTest()
+    def setUpClass(c_generated_code_class):
+        c_generated_code_class.o_root = {}
+        c_generated_code_class.o_grammar = GenericHookTest()
 
-    def test__Wrapper(self):
-        GenericHookTests.oGrammar.parse("foo", self.oRoot, "_"),
-        self.assertEqual(self.oRoot["sub"], "foo", "failed in @_")
-        self.assertEqual(id(self.oRoot) in self.oRoot, False, "failed in @_")
+    def test_underscore__wrapper(self):
+        GenericHookTests.o_grammar.parse("foo", self.o_root, "underscore"),
+        self.assertEqual(self.o_root["sub"], "foo", "failed in @_")
+        self.assertEqual(id(self.o_root) in self.o_root, False, "failed in @_")
 
-    def test_nextWrapper(self):
-        self.oRoot = {}
-        GenericHookTests.oGrammar.parse("foo", self.oRoot, "next"),
-        self.assertEqual(self.oRoot["bar"]["sub"], "foo", "failed in @next")
-        self.assertEqual(id(self.oRoot) in self.oRoot, False, "failed in @next")
+    def test_next_wrapper(self):
+        self.o_root = {}
+        GenericHookTests.o_grammar.parse("foo", self.o_root, "next"),
+        self.assertEqual(self.o_root["bar"]["sub"], "foo", "failed in @next")
+        self.assertEqual(id(self.o_root) in self.o_root, False, "failed in @next")
 
-    def test_push_atWrapper(self):
-        self.oRoot = {}
-        GenericHookTests.oGrammar.parse("foo, bar, rab, oof", self.oRoot, "push_at"),
-        clean_tree(self.oRoot, "parent")
-        clean_tree(self.oRoot, "type")
+    def test_push_at_wrapper(self):
+        self.o_root = {}
+        GenericHookTests.o_grammar.parse("foo, bar, rab, oof", self.o_root, "push_at"),
+        clean_tree(self.o_root, "parent")
+        clean_tree(self.o_root, "type")
         self.assertEqual(
-            self.oRoot["subs"],
+            self.o_root["subs"],
             [{"sub": "foo"}, {"sub": "bar"}, {"sub": "rab"}, {"sub": "oof"}],
             "failed in @push_at",
         )
-        self.assertEqual(id(self.oRoot) in self.oRoot, False, "failed in @push_at")
+        self.assertEqual(id(self.o_root) in self.o_root, False, "failed in @push_at")
 
     def test_push_capture_at(self):
-        self.oRoot = {}
-        GenericHookTests.oGrammar.parse(
-            "foo, bar, rab, oof", self.oRoot, "push_capture_at"
+        self.o_root = {}
+        GenericHookTests.o_grammar.parse(
+            "foo, bar, rab, oof", self.o_root, "push_capture_at"
         ),
         self.assertEqual(
-            self.oRoot["subs"],
+            self.o_root["subs"],
             ["foo", "bar", "rab", "oof"],
             "failed in @push_capture_at",
         )
         self.assertEqual(
-            id(self.oRoot) in self.oRoot, False, "failed in @push_capture_at"
+            id(self.o_root) in self.o_root, False, "failed in @push_capture_at"
         )
 
     def test_continue(self):
-        self.oRoot = {}
+        self.o_root = {}
         try:
-            GenericHookTests.oGrammar.parse("id1 123 id3", self.oRoot, "continue")
+            GenericHookTests.o_grammar.parse("id1 123 id3", self.o_root, "continue")
         except:
             print("THIS EXCEPTION IS PART OF THE TEST.")
 
 
 # Visual tests
 #      def test_trace_hook(self):
-#          GenericHookTests.oGrammar.parse('', self.oRoot, 'trace_hook')
+#          GenericHookTests.o_grammar.parse('', self.oRoot, 'trace_hook')
 
 #      def test_trace_wrapper(self):
-#          GenericHookTests.oGrammar.parse('foo', self.oRoot, 'trace_wrapper')
+#          GenericHookTests.o_grammar.parse('foo', self.oRoot, 'trace_wrapper')
 
 #      def test_consumed_wrapper(self):
-# GenericHookTests.oGrammar.parse('foo', self.oRoot, 'consumed_wrapper')
+# GenericHookTests.o_grammar.parse('foo', self.oRoot, 'consumed_wrapper')

@@ -18,12 +18,12 @@ from pyrser.parsing import Parsing
 from functools import wraps
 
 
-def dontConsume(oTarget):
-    @wraps(oTarget)
-    def wrapper(*lArgs):
-        Parsing.oBaseParser.saveContext()
-        bRes = oTarget(*lArgs)
-        Parsing.oBaseParser.restoreContext()
-        return bRes
+def dont_consume(o_target):
+    @wraps(o_target)
+    def wrapper(*l_args):
+        Parsing.o_base_parser.save_context()
+        b_res = o_target(*l_args)
+        Parsing.o_base_parser.restore_context()
+        return b_res
 
     return wrapper

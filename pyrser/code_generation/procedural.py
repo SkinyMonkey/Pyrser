@@ -18,118 +18,120 @@ from pyrser.code_generation.browse_grammar import BrowseGrammar
 
 
 class Procedural(BrowseGrammar):
-    def __init__(self, dLangConf):
-        super(Procedural, self).__init__(dLangConf)
+    def __init__(self, d_lang_conf):
+        super(Procedural, self).__init__(d_lang_conf)
 
-    def wrap_context(self, oCallback, oArgument):
-        self.oHelper.pushCount(0, 1)
-        self.oHelper.incDepth()
-        self.oHelper.pushAlt(False)
-        oCallback(oArgument)
-        self.oHelper.popAlt()
-        self.oHelper.decDepth()
-        self.oHelper.popCount()
+    def wrap_context(self, o_callback, o_argument):
+        self.o_helper.push_count(0, 1)
+        self.o_helper.inc_depth()
+        self.o_helper.push_alt(False)
+        o_callback(o_argument)
+        self.o_helper.pop_alt()
+        self.o_helper.dec_depth()
+        self.o_helper.pop_count()
 
-    def addOpenParenthesis(self, oTarget):
-        if oTarget["terminal"]["type"] in ("multiplier", "alt"):
-            self.sRes += "(\\\n"
-            self.lang_terminal(oTarget["terminal"])
+    def add_open_parenthesis(self, o_target):
+        if o_target["terminal"]["type"] in ("multiplier", "alt"):
+            self.s_res += "(\\\n"
+            self.lang_terminal(o_target["terminal"])
         else:
-            self.sRes += "("
-            self.lang_terminal(oTarget["terminal"], False)
+            self.s_res += "("
+            self.lang_terminal(o_target["terminal"], False)
 
-    def unary(self, oTarget, bNewline=True):
-        self.wrap_context(self.addOpenParenthesis, oTarget)
+    def unary(self, o_target, b_newline=True):
+        self.wrap_context(self.add_open_parenthesis, o_target)
         if (
-            oTarget["terminal"]["type"] in ("multiplier", "alt", "terminal_range")
-            and bNewline
+            o_target["terminal"]["type"] in ("multiplier", "alt", "terminal_range")
+            and b_newline
         ):
-            self.sRes += "\n"
-            self.sRes += self.oHelper.indent()
+            self.s_res += "\n"
+            self.s_res += self.o_helper.indent()
 
-    def capitalizeIfRecurse(self, sToCapitalize):
-        if self.oHelper.inRecurse():
-            return self.oHelper.capitalize(sToCapitalize)
-        return sToCapitalize
+    def capitalize_if_recurse(self, s_to_capitalize):
+        if self.o_helper.in_recurse():
+            # FIXME : temporary
+            name = ''.join(word.title() for word in s_to_capitalize.split('_'))
+            return self.o_helper.capitalize(name)
+        return s_to_capitalize
 
-    def lang_alternative_terminal(self, oAlt):
-        self.sRes += self.capitalizeIfRecurse(self.oHelper.alt())
-        self.sRes += "(\\\n"
-        self.oHelper.pushAlt(True, len(oAlt["alternatives"]))
-        self.oHelper.incDepth()
-        self.browse_clauses(oAlt)
-        self.sRes += ")"
-        self.oHelper.decDepth()
-        self.oHelper.popAlt()
+    def lang_alternative_terminal(self, o_alt):
+        self.s_res += self.capitalize_if_recurse(self.o_helper.alt())
+        self.s_res += "(\\\n"
+        self.o_helper.push_alt(True, len(o_alt["alternatives"]))
+        self.o_helper.inc_depth()
+        self.browse_clauses(o_alt)
+        self.s_res += ")"
+        self.o_helper.dec_depth()
+        self.o_helper.pop_alt()
 
     def lang_terminal_range(self, terminal):
-        self.sRes += self.capitalizeIfRecurse(self.oHelper.multiplier("{}"))
+        self.s_res += self.capitalize_if_recurse(self.o_helper.multiplier("{}"))
         self.unary(terminal)
-        self.sRes += ", %s" % terminal["from"]
+        self.s_res += ", %s" % terminal["from"]
         if "to" in terminal:
-            self.sRes += ", %s" % terminal["to"]
-        self.sRes += ")"
+            self.s_res += ", %s" % terminal["to"]
+        self.s_res += ")"
 
     def lang_not(self, negation):
-        self.sRes += self.capitalizeIfRecurse(self.oHelper.not_(negation["not"]))
+        self.s_res += self.capitalize_if_recurse(self.o_helper.not_(negation["not"]))
         self.unary(negation, False)
-        self.sRes += ")"
+        self.s_res += ")"
 
     def lang_multiplier(self, multiplier):
-        self.sRes += self.capitalizeIfRecurse(
-            self.oHelper.multiplier(multiplier["multiplier"])
+        self.s_res += self.capitalize_if_recurse(
+            self.o_helper.multiplier(multiplier["multiplier"])
         )
         if multiplier["multiplier"] == "[]":
-            self.sRes += "(\\\n"
+            self.s_res += "(\\\n"
             self.wrap_context(self.browse_clauses, multiplier["terminal"]["clauses"])
         else:
             self.unary(multiplier, False)
-        self.sRes += ")"
+        self.s_res += ")"
 
     def lang_capture(self, capture):
-        self.sRes += self.capitalizeIfRecurse("capture")
+        self.s_res += self.capitalize_if_recurse("capture")
         self.unary(capture)
-        self.sRes += ', "%s", oNode)' % capture["name"]
+        self.s_res += ', "%s", oNode)' % capture["name"]
 
     def lang_until(self, until):
-        self.sRes += self.capitalizeIfRecurse("until")
+        self.s_res += self.capitalize_if_recurse("until")
         self.unary(until, False)
-        self.sRes += ")"
+        self.s_res += ")"
 
-    def lang_lookAhead(self, look_ahead):
-        self.sRes += capitalizeIfRecurse("lookAhead")
+    def lang_look_ahead(self, look_ahead):
+        self.s_res += capitalizeIfRecurse("lookAhead")
         unary(look_ahead, False)
-        self.sRes += ")"
+        self.s_res += ")"
 
     def lang_syntax(self, indent=True):
         if indent == True:
-            self.sRes += self.oHelper.indent()
-        if not self.oHelper.inRecurse():
-            self.sRes += self.oHelper.keyword("and")
-        if self.oHelper.inRecurse() and (
-            self.oHelper.count() > 0 or self.oHelper.altCount() > 0
+            self.s_res += self.o_helper.indent()
+        if not self.o_helper.in_recurse():
+            self.s_res += self.o_helper.keyword("and")
+        if self.o_helper.in_recurse() and (
+            self.o_helper.count() > 0 or self.o_helper.alt_count() > 0
         ):
-            self.sRes += ","
+            self.s_res += ","
         else:
-            self.sRes += " "
+            self.s_res += " "
 
     def lang_terminal(self, terminal, indent=True):
         self.lang_syntax(indent)
         getattr(self, "lang_%s" % terminal["type"])(terminal)
         if (
-            self.oHelper.count() < self.oHelper.length() - 1
-            or self.oHelper.altCount() < self.oHelper.altLength() - 1
+            self.o_helper.count() < self.o_helper.length() - 1
+            or self.o_helper.alt_count() < self.o_helper.alt_length() - 1
         ):
-            self.sRes += "\\\n"
-            self.oHelper.incCount()
+            self.s_res += "\\\n"
+            self.o_helper.inc_count()
 
     def lang_alternative(self, loop, alternative):
-        self.oHelper.pushCount(0, len(alternative))
+        self.o_helper.push_count(0, len(alternative))
         self.browse_alternative(alternative)
-        self.oHelper.incAltCount()
-        self.oHelper.popCount()
+        self.o_helper.inc_alt_count()
+        self.o_helper.pop_count()
 
     def lang_clauses(self, clauses):
-        self.oHelper.pushAlt(False)
+        self.o_helper.push_alt(False)
         self.browse_clauses(clauses)
-        self.oHelper.popAlt()
+        self.o_helper.pop_alt()

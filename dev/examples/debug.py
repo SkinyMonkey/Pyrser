@@ -22,9 +22,9 @@ class Debug(Grammar, GenericHook):
     pass
 
 
-oGrammar = Debug()
-oRoot = {}
-print((oGrammar.parse("123", oRoot, "debug")))
-clean_tree(oRoot, "parent")
-clean_tree(oRoot, "type")
-pprint(oRoot)
+o_grammar = Debug()
+o_root = {}
+print((o_grammar.parse("123", o_root, "debug")))
+clean_tree(o_root, "parent")
+clean_tree(o_root, "type")
+pprint(o_root)

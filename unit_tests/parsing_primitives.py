@@ -19,7 +19,7 @@ class AsciiParseUnitTest(unittest.TestCase):
         self.assertEqual(self.i(), 0, "failed in .Ctor : [%d]" % self.i())
         self.s = "abc"
 
-    def test_readChar_and_peekChar(self):
+    def test_read_char_and_peek_char(self):
         self.n("abc")
         self.assertEqual(
             (self.w.readChar("a") and self.i() == 1),
@@ -27,7 +27,7 @@ class AsciiParseUnitTest(unittest.TestCase):
             "failed in readChar/peekChar",
         )
 
-    def test_readWs(self):
+    def test_read_ws(self):
         self.n("    notspace")
         self.w.readWs()
         self.assertEqual((self.i() == 4), True, "failed in readWs : [%d]" % self.i())
@@ -38,7 +38,7 @@ class AsciiParseUnitTest(unittest.TestCase):
     def test_multiline_comment(self):
         pass
 
-    def test_readUntil(self):
+    def test_read_until(self):
         self.n("a[..]z")
         self.w.readUntil("z", "\\")
         self.assertEqual(
@@ -56,14 +56,14 @@ class AsciiParseUnitTest(unittest.TestCase):
             "failed in readUntil inhibitor : [%d]" % self.i(),
         )
 
-    def test_readUntilEOF(self):
+    def test_read_until_eof(self):
         self.n("[abc]")
         self.w.readUntilEOF()
         self.assertEqual(
             self.w.readEOF(), True, "failed in readUntilEOF : [%d]" % self.i()
         )
 
-    def test_ColonContext(self):
+    def test__colon_context(self):
         # FIXME : complete on line test
         self.n("abc")
         self.assertEqual(
@@ -77,7 +77,7 @@ class AsciiParseUnitTest(unittest.TestCase):
             "failed in colons context maintain (Index is wrong) : [%s]" % self.i(),
         )
 
-    def test_LineContext(self):
+    def test__line_context(self):
         self.n("abc\ndef")
         self.w.readUntilEOF()
         self.assertEqual(
@@ -87,7 +87,7 @@ class AsciiParseUnitTest(unittest.TestCase):
 	      maintain",
         )
 
-    def test_readText(self):
+    def test_read_text(self):
         self.n("#text usefull")
         self.w.readText("#text")
         self.assertEqual(self.i(), 5, "failed in readText : [%d]" % self.i())
@@ -98,12 +98,12 @@ class AsciiParseUnitTest(unittest.TestCase):
         self.w.restoreContext()
         self.assertEqual(self.i(), 0, "failed in readText : [%d]" % self.i())
 
-    def test_readInteger(self):
+    def test_read_integer(self):
         self.n("12345 usefull")
         self.w.readInteger()
         self.assertEqual(self.i(), 5, "failed in readInteger : [%d]" % self.i())
 
-    def test_readIdentifier(self):
+    def test_read_identifier(self):
         self.n("_i123$1")
         self.w.readIdentifier()
         self.assertEqual(self.i(), 5, "failed in readIdentifier : [%d]" % self.i())
@@ -112,17 +112,17 @@ class AsciiParseUnitTest(unittest.TestCase):
         self.w.readIdentifier()
         self.assertEqual(self.i(), 1, "failed in readIdentifier : [%d]" % self.i())
 
-    def test_readRange(self):
+    def test_read_range(self):
         self.n("vzwyxa")
         self.w.readRange("v", "z")
         self.assertEqual(self.i(), 1, "failed in readRange : [%d]" % self.i())
 
-    def test_readCString(self):
+    def test_read_c_string(self):
         self.n('"abc" def')
         self.w.readCString()
         self.assertEqual(self.i(), 5, "failed in readCString : [%d]" % self.i())
 
-    def test_readCChar(self):
+    def test_read_c_char(self):
         self.n("'c' def")
         self.w.readCChar()
         self.assertEqual(self.i(), 3, "failed in readCChar : [%d]" % self.i())
@@ -141,17 +141,17 @@ class AsciiParseUnitTest(unittest.TestCase):
             % (before, after, self.i()),
         )
 
-    def test_failreadCString(self):
+    def test_failread_c_string(self):
         self.n('"abc def')
         self.w.readCString()
         self.assertEqual(self.i(), 0, "failed in readCString : [%d]" % self.i())
 
-    def test_failreadCChar(self):
+    def test_failread_c_char(self):
         self.n("'a def")
         self.w.readCChar()
         self.assertEqual(self.i(), 0, "failed in readCChar : [%d]" % self.i())
 
-    def test_changeStream(self):
+    def test_change_stream(self):
         self.n("abc def")
         self.w.readUntil(" ")
         # 	  self.w.readIdentifier()
@@ -174,7 +174,7 @@ class AsciiParseUnitTest(unittest.TestCase):
             "failed while changing current stream : [%d]" % self.i(),
         )
 
-    def test_saveAndRestoreContext(self):
+    def test_save_and_restore_context(self):
         self.n("abc def")
         self.w.saveContext()
         self.w.readUntil(" ")

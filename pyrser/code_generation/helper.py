@@ -20,120 +20,120 @@ class CodeGenerationHelper(object):
     The code generation helper class.
     """
 
-    def __init__(self, dConf):
-        self.__nDepth = 1
-        self.__lCount = [self.Count(0, 0)]
-        self.__lAlt = [False]
-        self.__lAltCount = [self.Count(0, 0)]
-        self.__dGlobals = {}
-        self.__dConf = dConf
+    def __init__(self, d_conf):
+        self.__n_depth = 1
+        self.__l_count = [self.Count(0, 0)]
+        self.__l_alt = [False]
+        self.__l_alt_count = [self.Count(0, 0)]
+        self.__d_globals = {}
+        self.__d_conf = d_conf
 
     class Count(object):
-        def __init__(self, nCount, nLength):
-            self.nCount = nCount
-            self.nLength = nLength
+        def __init__(self, n_count, n_length):
+            self.n_count = n_count
+            self.n_length = n_length
 
-    def builtin(self, sName):
-        return self.__dConf["builtins"][sName]
+    def builtin(self, s_name):
+        return self.__d_conf["builtins"][s_name]
 
-    def keyword(self, sName):
-        return self.__dConf["keyword"][sName]
+    def keyword(self, s_name):
+        return self.__d_conf["keyword"][s_name]
 
-    def multiplier(self, sName):
-        return self.__dConf["multiplier"][sName]
+    def multiplier(self, s_name):
+        return self.__d_conf["multiplier"][s_name]
 
-    def not_(self, sName):
-        return self.__dConf["not"][sName]
+    def not_(self, s_name):
+        return self.__d_conf["not"][s_name]
 
-    def accessOperator(self):
-        return self.__dConf["accessOperator"]
+    def access_operator(self):
+        return self.__d_conf["access_operator"]
 
     def alt(self):
-        return self.__dConf["alt"]
+        return self.__d_conf["alt"]
 
-    def baseParserAccess(self):
-        return self.__dConf["baseParserMethod"] + self.__dConf["accessOperator"]
+    def base_parser_access(self):
+        return self.__d_conf["baseParserMethod"] + self.__d_conf["access_operator"]
 
-    def baseParser(self):
+    def base_parser(self):
         return (
-            self.__dConf["keyword"]["object"]
-            + self.__dConf["accessOperator"]
-            + self.__dConf["baseParserMethod"]
+            self.__d_conf["keyword"]["object"]
+            + self.__d_conf["access_operator"]
+            + self.__d_conf["baseParserMethod"]
         )
 
-    def accessInstance(self):
-        return self.__dConf["keyword"]["object"] + self.__dConf["accessOperator"]
+    def access_instance(self):
+        return self.__d_conf["keyword"]["object"] + self.__d_conf["access_operator"]
 
-    def upPrimitives(self):
-        return self.__dConf["upPrimitives"]
+    def up_primitives(self):
+        return self.__d_conf["upPrimitives"]
 
-    def capitalize(self, sString):
-        return "%s%s" % (sString[0].capitalize(), sString[1:])
+    def capitalize(self, s_string):
+        return "%s%s" % (s_string[0].capitalize(), s_string[1:])
 
-    def pushCount(self, nCount, nLength):
-        self.__lCount.append(self.Count(nCount, nLength))
+    def push_count(self, n_count, n_length):
+        self.__l_count.append(self.Count(n_count, n_length))
         return ""
 
-    def popCount(self):
-        self.__lCount.pop()
+    def pop_count(self):
+        self.__l_count.pop()
         return ""
 
-    def incCount(self):
-        self.__lCount[-1].nCount += 1
+    def inc_count(self):
+        self.__l_count[-1].n_count += 1
         return ""
 
-    def incDepth(self):
-        self.__nDepth += 1
+    def inc_depth(self):
+        self.__n_depth += 1
         return ""
 
-    def decDepth(self):
-        self.__nDepth -= 1
+    def dec_depth(self):
+        self.__n_depth -= 1
         return ""
 
-    def pushAlt(self, bAlt, nAltLength=0):
-        self.__lAlt.append(bAlt)
-        self.__lAltCount.append(self.Count(0, nAltLength))
+    def push_alt(self, b_alt, n_alt_length=0):
+        self.__l_alt.append(b_alt)
+        self.__l_alt_count.append(self.Count(0, n_alt_length))
         return ""
 
-    def popAlt(self):
-        self.__lAlt.pop()
-        self.__lAltCount.pop()
+    def pop_alt(self):
+        self.__l_alt.pop()
+        self.__l_alt_count.pop()
         return ""
 
-    def altCount(self):
-        return self.__lAltCount[-1].nCount
+    def alt_count(self):
+        return self.__l_alt_count[-1].n_count
 
-    def altLength(self):
-        return self.__lAltCount[-1].nLength
+    def alt_length(self):
+        return self.__l_alt_count[-1].n_length
 
-    def incAltCount(self):
-        self.__lAltCount[-1].nCount += 1
+    def inc_alt_count(self):
+        self.__l_alt_count[-1].n_count += 1
         return ""
 
     def count(self):
-        return self.__lCount[-1].nCount
+        return self.__l_count[-1].n_count
 
     def length(self):
-        return self.__lCount[-1].nLength
+        return self.__l_count[-1].n_length
 
-    def inAlt(self):
-        return self.__lAlt[-1] == True
+    def in_alt(self):
+        return self.__l_alt[-1] == True
 
-    def inDepth(self):
-        return self.__nDepth > 1
+    def in_depth(self):
+        return self.__n_depth > 1
 
-    def inRecurse(self):
-        return self.inDepth() or self.inAlt()
+    def in_recurse(self):
+        return self.in_depth() or self.in_alt()
 
-    def getattr(self, oObject, sName):
-        return oObject._TemplateReference__context[sName]
+    def getattr(self, o_object, s_name):
+        return o_object._TemplateReference__context[s_name]
 
     def indent(self):
-        return " " * self.__dConf["indent"] * self.__nDepth
+        return " " * self.__d_conf["indent"] * self.__n_depth
 
-    def setGlobal(self, sName, oValue):
-        self.__dGlobals[sName] = oValue
+    def set_global(self, s_name, o_value):
+        self.__d_globals[s_name] = o_value
         return ""
 
-    def getGlobal(self, sName):
-        return self.__dGlobals[sName]
+    def get_global(self, s_name):
+        return self.__d_globals[s_name]
