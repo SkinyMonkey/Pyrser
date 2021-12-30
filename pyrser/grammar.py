@@ -22,7 +22,6 @@ from pyrser.code_generation import python
 from pyrser.parsing.capture import capture, Capture
 from pyrser.parsing.parsing_context import parsing_context, Parsing
 from pyrser.parsing.directive_functor import (
-    functor,
     NonTerminal,
     ReadChar,
     Hook,

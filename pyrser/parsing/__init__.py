@@ -17,11 +17,11 @@
 from pyrser.parsing.python.AsciiParseWrapper import AsciiParseWrapper
 
 
+# FIXME : this should be inherited by grammars that use it
+# and passed to each using function...
 class Parsing(object):
     o_parser_class = AsciiParseWrapper
     o_base_parser = o_parser_class("")
-
-
 #      oFinalParser = o_base_parser
 
 

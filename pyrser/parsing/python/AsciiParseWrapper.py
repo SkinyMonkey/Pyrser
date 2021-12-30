@@ -124,7 +124,7 @@ class AsciiParseWrapper:
         """
         Return current Stream name.
         """
-        return self.get_stream().getName()
+        return self.get_stream().get_name()
 
     def get_stream_len(self):
         """
@@ -148,7 +148,7 @@ class AsciiParseWrapper:
         """
         Print current real stream contained.
         """
-        return self.get_stream().printStream(n_index)
+        return self.get_stream().print_stream(n_index)
 
     ### PARSING PRIMITIVE
 

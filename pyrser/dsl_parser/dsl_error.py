@@ -22,9 +22,9 @@ class GrammarException(Exception):
         super(Exception, self).__init__(
             "In %s line %d column %d : %s"
             % (
-                Parsing.o_base_parser.getName(),
-                Parsing.o_base_parser.getLineNbr(),
-                Parsing.o_base_parser.getColumnNbr(),
+                Parsing.o_base_parser.get_name(),
+                Parsing.o_base_parser.get_line_nbr(),
+                Parsing.o_base_parser.get_column_nbr(),
                 s_text,
             )
         )

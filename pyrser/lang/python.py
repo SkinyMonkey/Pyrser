@@ -14,7 +14,7 @@ python = {
         "readThisText": "read_text",
         "range": "read_range",
         "not_ignore": "not_ignore",
-        "resetIgnore": "reset_ignore",
+        "reset_ignore": "reset_ignore",
     },
     "not": {"!": "negation", "~": "complement"},
     "multiplier": {

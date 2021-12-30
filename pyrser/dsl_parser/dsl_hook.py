@@ -33,7 +33,7 @@ d_builtins = (
     "empty",
     "super",
     "not_ignore",
-    "resetIgnore",
+    "reset_ignore",
 )
 
 
