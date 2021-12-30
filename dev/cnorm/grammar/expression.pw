@@ -3,7 +3,7 @@ expression ::= @_ assignment :captured #captured_something
 
 assignment ::=
   @_ conditional
-  [ ['=' #Nnary_op("binary", "left", "right") ] :op conditional]*
+  [ ['=' #nnary_op("binary", "left", "right") ] :op conditional]*
 ;
 
 constant ::= @_ conditional
@@ -12,7 +12,7 @@ constant ::= @_ conditional
 conditional ::=
   @_ add
   [
-    ['?' #Nnary_op("ternary", "condition", "then")] :op
+    ['?' #nnary_op("ternary", "condition", "then")] :op
     [add]?
     ':'
     @next("else")
@@ -21,11 +21,11 @@ conditional ::=
 ;
 
 add ::=
-  @_ mul [ [ ['+'| '-'] #Nnary_op("binary", "left", "right") ] :op mul ]*
+  @_ mul [ [ ['+'| '-'] #nnary_op("binary", "left", "right") ] :op mul ]*
 ;
 
 mul ::=
-  @_ unary [ [ ['/'| '*' | '%'] #Nnary_op("binary", "left", "right") ] :op unary ]*
+  @_ unary [ [ ['/'| '*' | '%'] #nnary_op("binary", "left", "right") ] :op unary ]*
 ;
 
 unary ::=

@@ -22,7 +22,7 @@
 {%- endmacro -%}
 
 {%- macro for_expression(stmt, field) -%}
-  {%- if stmt.has_key(field) -%}
+  {%- if field in stmt -%}
   {{expression(stmt.__getitem__(field))}}
   {%- endif -%}
 {%- endmacro -%}
@@ -43,7 +43,7 @@ do
 {%- endmacro -%}
 
 {%- macro labeled(stmt) -%}
-{%- if stmt.has_key('keyword') -%}
+{%- if "keyword" in stmt -%}
 {{stmt.keyword}}:
 {%- else -%}
 {{stmt.label}}:
@@ -53,7 +53,7 @@ do
 
 {%- macro jump(stmt) -%}
   {%- if stmt.keyword == "return"-%}
-  return{% if stmt.has_key('condition') %} ({{expression(stmt.condition)}}){% endif %}
+  return{% if "condition" in stmt %} ({{expression(stmt.condition)}}){% endif %}
   {%- else -%}
   {{stmt.keyword}}{% if stmt.keyword == "goto"%} {{stmt.label}}{% endif -%}
   {%- endif -%};
@@ -61,7 +61,7 @@ do
 
 {%- macro selection(stmt) -%}
   {{statement_base(stmt)}}
-  {%- if stmt.has_key('else') %}
+  {%- if "else" in stmt %}
 else
 {{getattr(self, stmt.stmt.sub_type)(stmt.stmt)}}
   {%- endif -%}
@@ -71,6 +71,6 @@ else
   {{getattr(self, stmt.sub_type)(stmt)}}
 {%- endmacro -%}
 
-{%- if tree.has_key('unittest') and tree.unittest == True-%}
+{%- if "unittest" in tree and tree.unittest == True-%}
 {{statement(tree)}}
 {%- endif -%}

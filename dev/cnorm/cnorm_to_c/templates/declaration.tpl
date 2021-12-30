@@ -1,21 +1,21 @@
 {%- extends 'statement.tpl' -%}
 
 {%- macro pointer(decl) %}
-{%- if decl.has_key('pointer') -%}
+{%- if "pointer" in decl -%}
 {%- for ptr in decl.pointer -%}
   *
-{%- if ptr.has_key('type_qualifier') %} {{ptr.type_qualifier}}{% endif -%}
+{%- if "type_qualifier"  in ptr %} {{ptr.type_qualifier}}{% endif -%}
 {%- endfor %}
 {%- endif -%}
 {%- endmacro -%}
 
 {%- macro parameters(decl) -%}
-{%- if decl.ctype.has_key('parameters') -%}
+{%- if "parameters" in decl.ctype -%}
   ({%- for parameter in decl.ctype.parameters -%}
     {# ne pas faire a la main mais faire avec un appel de methode#}
     {%- if loop.index > 1 -%}, {% endif -%}
     {{ctype(parameter.ctype)}}
-    {%- if parameter.has_key('name') %} {{array(parameter)}}{%- endif -%}
+    {%- if "name" in parameter %} {{array(parameter)}}{%- endif -%}
   {%- endfor %})
 {%- endif -%}
 {%- endmacro -%}
@@ -35,7 +35,7 @@
 
 {%- macro array(decl) -%}
 {{decl.name}}
-{%- if decl.has_key('array') -%}
+{%- if "array" in decl -%}
 [{# FIXME : expression#}]
 {%- endif -%}
 {%- endmacro %}
@@ -51,7 +51,7 @@
 
 {%- macro __struct__(decl) -%}
 struct {{decl.type_specifier}}
-{%- if decl.has_key('declarations') -%}
+{%- if "declarations"  in decl -%}
 {
   {%- for declaration in decl.declarations -%}
   {{getattr(self, declaration.type)(declaration)}}
@@ -62,11 +62,11 @@ struct {{decl.type_specifier}}
 
 {%- macro __union__(decl) -%}
 union {{decl.type_specifier}}
-{%- if decl.has_key('declarations') -%}
+{%- if "declarations" in decl -%}
 {
   {%- for declaration in decl.declarations -%}
   {{getattr(self, declaration.ctype.type)(declaration)}}
-  {%- if declaration.has_key('bitfield') -%}
+  {%- if "bitfield" in declaration -%}
   : {{expression(declaration.bitfield)}}
   {%- endif -%};
   {%- endfor -%}
@@ -76,7 +76,7 @@ union {{decl.type_specifier}}
 
 {%- macro __enum__(decl) -%}
 enum {{decl.type_specifier}}
-{%- if decl.has_key('declarations') -%}
+{%- if "declarations" in decl -%}
 {
   {%- for declaration in decl.declarations -%}
   {{declaration.name}}{% if loop.index < loop.length %},{% endif %}
@@ -87,7 +87,7 @@ enum {{decl.type_specifier}}
 
 {%- macro __function__(decl) -%}
 {{ctype(decl.ctype)}} {{decl.name}}{{- parameters(decl)}}
-{%- if decl.has_key('body') -%}
+{%- if "body" in decl -%}
 {}
 {%- endif -%}
 {%- endmacro -%}

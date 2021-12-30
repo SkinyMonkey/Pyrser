@@ -1,7 +1,7 @@
 from pyrser.grammar import Grammar
 from pyrser.hooks import GenericHook
-from .expression import CExpression
-from .statement import CStatement
+from dev.cnorm.expression import CExpression
+from dev.cnorm.statement import CStatement
 from copy import copy
 
 
@@ -126,8 +126,8 @@ class CDeclaration(GenericHook, Grammar):
 if __name__ != "__main__":
     CDeclaration()
 else:
-    from .tests.test import test
-    from .tests.declaration import l_test
+    from dev.cnorm.tests.test import test
+    from dev.cnorm.tests.declaration import l_test
 
     b_res = test(l_test, CDeclaration(), "declaration.tpl", "translation_unit")
     if b_res == False:

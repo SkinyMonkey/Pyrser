@@ -33,7 +33,7 @@
 {%- endmacro -%}
 
 {%- macro post(expr) -%}
-  {%- if expr.has_key("postfix") -%}
+  {%- if "postfix" in expr -%}
     {%- for subexpr in expr.postfix -%}
       {{getattr(self, subexpr.sub_type)(subexpr)}}
     {%- endfor -%}
@@ -42,7 +42,7 @@
 
 {%- macro terminal(expr) -%}
   {# FIXME : useless?
-  {%- if expr.has_key("cast") -%}
+  {%- if "cast" in expr -%}
     {{expr.cast}}
   {%- endif -%}
   #}

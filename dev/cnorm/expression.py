@@ -64,8 +64,8 @@ class CExpression(GenericHook, Grammar):
 if __name__ != "__main__":
     CExpression()
 else:
-    from .tests.test import test
-    from .tests.expression import l_test
+    from dev.cnorm.tests.test import test
+    from dev.cnorm.tests.expression import l_test
 
     test(l_test, CExpression(), "test_expression.tpl", "expression")
     print("All test passed.")
